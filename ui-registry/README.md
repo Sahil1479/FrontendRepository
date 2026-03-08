@@ -1,7 +1,7 @@
 # UI Registry
 
 A reusable frontend component library for any web project.  
-**Plain HTML · CSS · JavaScript — zero frameworks, zero build tools, zero external dependencies.**
+**Plain HTML · CSS · JavaScript**
 
 Open `index.html` directly in any browser. No server needed.
 
@@ -89,13 +89,13 @@ For self-contained pages (no server, opened as `file://`) inline the CSS inside 
 UITextbox.validate(fieldEl, { required, minLength, maxLength, pattern, patternMsg, label })
 UITextbox.setError(fieldEl, 'message')
 UITextbox.clearError(fieldEl)
-UITextbox.getValue(fieldEl)     // → trimmed string
+UITextbox.getValue(fieldEl)
 ```
 
 ### UIPassword
 ```js
 UIPassword.validate(fieldEl, { required, minLength })
-UIPassword.getValue(fieldEl)    // → raw (untrimmed) string
+UIPassword.getValue(fieldEl)
 UIPassword.show(fieldEl)
 UIPassword.hide(fieldEl)
 UIPassword.setError(fieldEl, 'message')
@@ -151,10 +151,5 @@ Override at `:root` in your project's stylesheet to retheme everything at once:
 1. Create `projects/<your-project>/` 
 2. Add pages under `projects/<your-project>/pages/<page-name>/`
 3. Each page is a self-contained `.html` file — inline the component CSS and JS, then write your page-specific styles and logic
-4. Link back from `index.html` in the Projects section
-
+4. Include the Page in the root `index.html` for demo
 ---
-
-## Browser Support
-
-All modern browsers (Chrome, Firefox, Safari, Edge).
