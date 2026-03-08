@@ -35,15 +35,33 @@ const UIAlert = (() => {
     el.classList.remove('hidden', 'dismissing');
   }
 
+  // function hide(el) {
+  //   if (!el) return;
+  //   el.classList.add('dismissing');
+  //   const done = () => {
+  //     el.hidden = true;
+  //     el.classList.remove('dismissing');
+  //     el.removeEventListener('animationend', done);
+  //   };
+  //   el.addEventListener('animationend', done);
+  // }
+
   function hide(el) {
-    if (!el) return;
+    if (!el || el.classList.contains('dismissing')) return;
+    
     el.classList.add('dismissing');
-    const done = () => {
-      el.hidden = true;
-      el.classList.remove('dismissing');
-      el.removeEventListener('animationend', done);
+
+    const removeEl = () => {
+      if (el.parentNode) {
+        el.remove();
+      }
     };
-    el.addEventListener('animationend', done);
+
+    // Listen for the CSS animation to finish
+    el.addEventListener('animationend', removeEl, { once: true });
+
+    // Fallback: If for some reason the animation fails/blocked, remove after 400ms
+    setTimeout(removeEl, 400);
   }
 
   function setMessage(el, title, message) {
