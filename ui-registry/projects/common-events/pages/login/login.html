@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — Common Events</title>
+  <style>
+    /* ----------------------------------------------------------------
+       Design tokens (from assets/theme.css, inlined for local-file use)
+       ---------------------------------------------------------------- */
+    :root {
+      --ui-primary:        #1a6b4a;
+      --ui-primary-dark:   #134f38;
+      --ui-primary-mid:    #1d7a55;
+      --ui-primary-light:  #e8f5ef;
+      --ui-primary-glow:   rgba(26,107,74,.18);
+      --ui-white:          #fff;
+      --ui-bg:             #f1f4f2;
+      --ui-surface:        #fff;
+      --ui-surface-alt:    #f7faf8;
+      --ui-border:         #d0dbd6;
+      --ui-border-mid:     #b8cdc5;
+      --ui-border-focus:   #1a6b4a;
+      --ui-text-1:         #19251f;
+      --ui-text-2:         #385048;
+      --ui-text-3:         #66877a;
+      --ui-text-4:         #9ab5aa;
+      --ui-error:          #c0281d;
+      --ui-error-bg:       #fef2f1;
+      --ui-error-border:   #f0b4b0;
+      --ui-error-glow:     rgba(192,40,29,.15);
+      --ui-warning:        #b86d06;
+      --ui-warning-bg:     #fef7ea;
+      --ui-warning-border: #f0cf84;
+      --ui-success:        #1a6b4a;
+      --ui-success-bg:     #e8f5ef;
+      --ui-success-border: #96cdb2;
+      --ui-info:           #1358a0;
+      --ui-info-bg:        #e7eefb;
+      --ui-info-border:    #97bce6;
+      --ui-font: -apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,'Helvetica Neue',Arial,sans-serif;
+      --r-sm:4px; --r-md:8px; --r-lg:12px; --r-xl:16px; --r-full:9999px;
+      --sh-focus: 0 0 0 3px var(--ui-primary-glow);
+      --sh-lg:    0 8px 30px rgba(15,30,22,.12),0 2px 8px rgba(15,30,22,.06);
+      --sh-xl:    0 20px 60px rgba(15,30,22,.15),0 4px 16px rgba(15,30,22,.08);
+      --t-fast: 100ms ease; --t-base: 180ms ease;
+      --z-dropdown: 100;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    body{font-family:var(--ui-font);font-size:15px;color:var(--ui-text-1);background:var(--ui-bg);line-height:1.55}
+
+    /* ----------------------------------------------------------------
+       Component styles (textbox, password, multiselect, button, alert)
+       inlined here so this file is fully self-contained
+       ---------------------------------------------------------------- */
+
+    /* -- textbox -- */
+    .ui-field{display:flex;flex-direction:column;gap:6px;width:100%}
+    .ui-field__label{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;color:var(--ui-text-2);letter-spacing:.06em;text-transform:uppercase;user-select:none}
+    .ui-field__req{color:var(--ui-error);font-size:14px;line-height:1;font-weight:700}
+    .ui-field__ctrl{position:relative;display:flex;align-items:center}
+    .ui-field__input{width:100%;height:44px;padding:0 14px;font-family:var(--ui-font);font-size:14px;font-weight:400;color:var(--ui-text-1);background:var(--ui-surface);border:1.5px solid var(--ui-border);border-radius:var(--r-md);outline:none;appearance:none;transition:border-color var(--t-base),box-shadow var(--t-base),background var(--t-base)}
+    .ui-field__input::placeholder{color:var(--ui-text-4)}
+    .ui-field__input:hover:not(:focus):not(:disabled){border-color:var(--ui-border-mid)}
+    .ui-field__input:focus{border-color:var(--ui-border-focus);box-shadow:var(--sh-focus);background:var(--ui-white)}
+    .ui-field__input:disabled{background:var(--ui-surface-alt);color:var(--ui-text-3);cursor:not-allowed;opacity:.65}
+    .ui-field__hint{font-size:12px;color:var(--ui-text-3);line-height:1.5}
+    .ui-field__err{font-size:12px;font-weight:500;color:var(--ui-error);display:none;line-height:1.4}
+    .ui-field--error .ui-field__input{border-color:var(--ui-error);background:var(--ui-error-bg)}
+    .ui-field--error .ui-field__input:focus{box-shadow:0 0 0 3px var(--ui-error-glow)}
+    .ui-field--error .ui-field__err{display:block}
+    .ui-field--error .ui-field__hint{display:none}
+    .ui-field--success .ui-field__input{border-color:var(--ui-success)}
+
+    /* -- password toggle -- */
+    .ui-field--pw .ui-field__input{padding-right:46px}
+    .ui-pw-btn{position:absolute;right:1px;top:1px;bottom:1px;width:42px;display:flex;align-items:center;justify-content:center;background:none;border:none;border-radius:0 calc(var(--r-md) - 1px) calc(var(--r-md) - 1px) 0;cursor:pointer;color:var(--ui-text-3);padding:0;outline:none;transition:color var(--t-base),background var(--t-base)}
+    .ui-pw-btn:hover{color:var(--ui-primary);background:var(--ui-primary-light)}
+    .ui-pw-btn:focus-visible{outline:2px solid var(--ui-primary);outline-offset:-3px}
+    .ui-pw-icon{display:block;pointer-events:none}
+    .ui-pw-icon--off{display:none}
+    .ui-field--pw[data-vis="1"] .ui-pw-icon--on{display:none}
+    .ui-field--pw[data-vis="1"] .ui-pw-icon--off{display:block}
+    .ui-field--pw[data-vis="1"] .ui-pw-btn{color:var(--ui-primary)}
+
+    /* -- multiselect -- */
+    .ui-field--ms{position:relative}
+    .ui-ms-trigger{position:relative;display:flex;align-items:center;flex-wrap:wrap;gap:5px;min-height:44px;padding:6px 42px 6px 14px;background:var(--ui-surface);border:1.5px solid var(--ui-border);border-radius:var(--r-md);cursor:pointer;user-select:none;outline:none;transition:border-color var(--t-base),box-shadow var(--t-base)}
+    .ui-ms-trigger:hover{border-color:var(--ui-border-mid)}
+    .ui-ms-trigger:focus,.ui-ms-trigger[aria-expanded="true"]{border-color:var(--ui-border-focus);box-shadow:var(--sh-focus);background:var(--ui-white)}
+    .ui-field--error .ui-ms-trigger{border-color:var(--ui-error);background:var(--ui-error-bg)}
+    .ui-field--error .ui-ms-trigger:focus{box-shadow:0 0 0 3px var(--ui-error-glow)}
+    .ui-ms-ph{font-size:14px;color:var(--ui-text-4);pointer-events:none}
+    .ui-ms-ph.hidden{display:none}
+    .ui-ms-tags{display:flex;flex-wrap:wrap;gap:4px;flex:1}
+    .ui-tag{display:inline-flex;align-items:center;gap:3px;height:23px;padding:0 3px 0 9px;background:var(--ui-primary-light);color:var(--ui-primary-dark);border:1px solid rgba(26,107,74,.22);border-radius:var(--r-full);font-size:12px;font-weight:600;white-space:nowrap;animation:tagIn 150ms cubic-bezier(.34,1.56,.64,1)}
+    @keyframes tagIn{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+    .ui-tag__x{display:flex;align-items:center;justify-content:center;width:16px;height:16px;border:none;background:none;color:inherit;cursor:pointer;border-radius:50%;font-size:14px;line-height:1;padding:0;opacity:.7;transition:opacity var(--t-fast),background var(--t-fast)}
+    .ui-tag__x:hover{opacity:1;background:rgba(26,107,74,.2)}
+    .ui-ms-chev{position:absolute;right:13px;top:50%;transform:translateY(-50%);display:flex;color:var(--ui-text-3);pointer-events:none;transition:transform var(--t-base),color var(--t-base)}
+    .ui-ms-trigger[aria-expanded="true"] .ui-ms-chev{transform:translateY(-50%) rotate(180deg);color:var(--ui-primary)}
+    .ui-ms-panel{position:absolute;z-index:var(--z-dropdown);top:calc(100% + 5px);left:0;right:0;background:var(--ui-surface);border:1.5px solid var(--ui-border);border-radius:var(--r-lg);box-shadow:var(--sh-lg);overflow:hidden;display:none;flex-direction:column}
+    .ui-ms-panel.open{display:flex;animation:panelIn 150ms ease}
+    @keyframes panelIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+    .ui-ms-srch-wrap{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--ui-border);background:var(--ui-surface-alt)}
+    .ui-ms-srch-wrap svg{color:var(--ui-text-3);flex-shrink:0}
+    .ui-ms-srch{flex:1;border:none;outline:none;font-family:var(--ui-font);font-size:13px;color:var(--ui-text-1);background:transparent}
+    .ui-ms-srch::placeholder{color:var(--ui-text-4)}
+    .ui-ms-list{list-style:none;max-height:210px;overflow-y:auto;padding:5px 0;scrollbar-width:thin;scrollbar-color:var(--ui-border) transparent}
+    .ui-ms-list::-webkit-scrollbar{width:4px}
+    .ui-ms-list::-webkit-scrollbar-thumb{background:var(--ui-border);border-radius:99px}
+    .ui-ms-opt{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;font-size:13.5px;color:var(--ui-text-1);transition:background var(--t-fast)}
+    .ui-ms-opt:hover{background:var(--ui-surface-alt)}
+    .ui-ms-opt[aria-selected="true"]{background:var(--ui-primary-light);color:var(--ui-primary-dark)}
+    .ui-ms-opt.focused{background:var(--ui-surface-alt)}
+    .ui-ms-opt.filtered{display:none}
+    .ui-ms-chk{width:16px;height:16px;border:1.5px solid var(--ui-border-mid);border-radius:4px;background:var(--ui-white);flex-shrink:0;position:relative;transition:border-color var(--t-fast),background var(--t-fast)}
+    .ui-ms-opt[aria-selected="true"] .ui-ms-chk{background:var(--ui-primary);border-color:var(--ui-primary)}
+    .ui-ms-opt[aria-selected="true"] .ui-ms-chk::after{content:'';position:absolute;left:4px;top:1px;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg)}
+    .ui-ms-empty{padding:16px;text-align:center;font-size:13px;color:var(--ui-text-3)}
+    .ui-ms-footer{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-top:1px solid var(--ui-border);background:var(--ui-surface-alt)}
+    .ui-ms-clear{font-family:var(--ui-font);font-size:12px;font-weight:600;color:var(--ui-primary);background:none;border:none;cursor:pointer;padding:2px 0;text-decoration:underline;text-underline-offset:2px}
+    .ui-ms-clear:hover{color:var(--ui-primary-dark)}
+    .ui-ms-count{font-size:12px;color:var(--ui-text-3)}
+
+    /* -- button -- */
+    .ui-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 22px;font-family:var(--ui-font);font-size:14px;font-weight:600;letter-spacing:.01em;white-space:nowrap;border:1.5px solid transparent;border-radius:var(--r-md);cursor:pointer;outline:none;user-select:none;transition:background var(--t-base),color var(--t-base),border-color var(--t-base),box-shadow var(--t-base),transform var(--t-fast);overflow:hidden}
+    .ui-btn:active:not(:disabled){transform:scale(.975)}
+    .ui-btn:focus-visible{box-shadow:var(--sh-focus)}
+    .ui-btn:disabled{opacity:.45;cursor:not-allowed;pointer-events:none}
+    .ui-btn__lbl{display:flex;align-items:center;gap:6px;transition:opacity var(--t-fast)}
+    .ui-btn__spin{position:absolute;width:18px;height:18px;border:2.5px solid currentColor;border-top-color:transparent;border-radius:50%;animation:uiBtnSpin .7s linear infinite;opacity:0;pointer-events:none;transition:opacity var(--t-fast)}
+    @keyframes uiBtnSpin{to{transform:rotate(360deg)}}
+    .ui-btn--loading .ui-btn__lbl{opacity:0}
+    .ui-btn--loading .ui-btn__spin{opacity:1}
+    .ui-btn--loading{pointer-events:none}
+    .ui-btn--full{width:100%}
+    .ui-btn--primary{background:var(--ui-primary);color:#fff;border-color:var(--ui-primary);box-shadow:0 1px 3px rgba(26,107,74,.28),inset 0 1px 0 rgba(255,255,255,.08)}
+    .ui-btn--primary:hover:not(:disabled){background:var(--ui-primary-dark);border-color:var(--ui-primary-dark);box-shadow:0 4px 14px rgba(26,107,74,.35)}
+
+    /* -- alert -- */
+    .ui-alert{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-radius:var(--r-md);border:1px solid transparent;font-size:13.5px;line-height:1.45;animation:uiAlertIn 200ms ease;position:relative}
+    @keyframes uiAlertIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+    .ui-alert__icon{flex-shrink:0;display:flex;align-items:center;margin-top:1px}
+    .ui-alert__body{flex:1;display:flex;flex-direction:column;gap:2px}
+    .ui-alert__title{font-weight:700;font-size:13px}
+    .ui-alert__msg{font-weight:400;opacity:.9}
+    .ui-alert__x{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:22px;height:22px;background:none;border:none;cursor:pointer;border-radius:var(--r-sm);color:inherit;opacity:.6;transition:opacity var(--t-fast),background var(--t-fast);padding:0}
+    .ui-alert__x:hover{opacity:1;background:rgba(0,0,0,.09)}
+    .ui-alert--dismissible{padding-right:38px}
+    .ui-alert--dismissible .ui-alert__x{position:absolute;right:8px;top:9px}
+    .ui-alert--error  {background:var(--ui-error-bg);  border-color:var(--ui-error-border);  color:var(--ui-error)}
+    .ui-alert--warning{background:var(--ui-warning-bg);border-color:var(--ui-warning-border);color:var(--ui-warning)}
+    .ui-alert--success{background:var(--ui-success-bg);border-color:var(--ui-success-border);color:var(--ui-success)}
+    .ui-alert--info   {background:var(--ui-info-bg);   border-color:var(--ui-info-border);   color:var(--ui-info)}
+    .ui-alert[hidden],.ui-alert.hidden{display:none}
+    .ui-alert.dismissing{animation:uiAlertOut 180ms ease forwards}
+    @keyframes uiAlertOut{to{opacity:0;transform:translateY(-3px);max-height:0;padding:0;margin:0;overflow:hidden}}
+
+    /* ----------------------------------------------------------------
+       Login page layout (project-specific styles)
+       ---------------------------------------------------------------- */
+    .login-layout {
+      display: flex;
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    /* ---- Brand panel ---- */
+    .login-brand {
+      flex: 0 0 43%;
+      position: relative;
+      overflow: hidden;
+      background: var(--ui-primary);
+      background-image:
+        radial-gradient(ellipse 80% 55% at 25% 35%, rgba(34,136,94,.55) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 75% at 80% 80%, rgba(19,79,56,.8) 0%, transparent 60%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-brand__inner {
+      position: relative;
+      z-index: 1;
+      padding: 64px 52px;
+      max-width: 440px;
+      color: #fff;
+    }
+
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 52px; height: 52px;
+      background: rgba(255,255,255,.14);
+      border: 1.5px solid rgba(255,255,255,.28);
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -.03em;
+      margin-bottom: 36px;
+    }
+
+    .brand-headline {
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -.025em;
+      margin-bottom: 16px;
+    }
+    .brand-headline em { font-style: italic; font-weight: 300; opacity: .9; }
+
+    .brand-sub {
+      font-size: 14.5px;
+      font-weight: 300;
+      line-height: 1.65;
+      opacity: .75;
+      margin-bottom: 40px;
+    }
+
+    .brand-features { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .brand-features li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13.5px;
+      font-weight: 500;
+      opacity: .82;
+    }
+    .brand-dot { width: 6px; height: 6px; border-radius: 50%; background: #f5a623; flex-shrink: 0; }
+
+    /* Decorative circles */
+    .brand-deco { position: absolute; inset: 0; pointer-events: none; }
+    .brand-c    { position: absolute; border-radius: 50%; border: 1px solid rgba(255,255,255,.07); }
+    .brand-c1   { width: 340px; height: 340px; bottom: -90px; right: -90px; }
+    .brand-c2   { width: 210px; height: 210px; bottom: 55px;  right: 15px;  background: rgba(255,255,255,.025); }
+    .brand-c3   { width: 130px; height: 130px; top: 35px;     left: -35px;  background: rgba(255,255,255,.03);  }
+
+    /* ---- Main panel ---- */
+    .login-main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      background: var(--ui-bg);
+      overflow-y: auto;
+    }
+
+    /* ---- Card ---- */
+    .login-card {
+      width: 100%;
+      max-width: 448px;
+      background: var(--ui-surface);
+      border: 1px solid var(--ui-border);
+      border-radius: 20px;
+      padding: 44px 40px;
+      box-shadow: var(--sh-xl);
+    }
+
+    .login-card__mobile-logo { display: none; margin-bottom: 24px; }
+
+    .login-card__header { margin-bottom: 32px; }
+    .login-card__title  { font-size: 24px; font-weight: 700; color: var(--ui-text-1); letter-spacing: -.025em; line-height: 1.2; margin-bottom: 6px; }
+    .login-card__sub    { font-size: 13.5px; color: var(--ui-text-3); }
+
+    /* Alerts area */
+    .login-alerts          { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+    .login-alerts:empty    { margin-bottom: 0; }
+
+    /* Form */
+    .login-form            { display: flex; flex-direction: column; gap: 20px; }
+    .login-form__submit    { margin-top: 6px; }
+
+    /* Footer */
+    .login-card__footer {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--ui-border);
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--ui-text-3);
+    }
+    .login-card__footer a  { color: var(--ui-primary); text-decoration: none; font-weight: 600; }
+    .login-card__footer a:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 860px) {
+      .login-brand { display: none; }
+      .login-card__mobile-logo { display: block; }
+    }
+    @media (max-width: 480px) {
+      .login-main { padding: 24px 16px; align-items: flex-start; padding-top: 40px; }
+      .login-card { padding: 28px 22px; border-radius: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-layout">
+
+  <!-- ── Brand Panel (Common Events content) ── -->
+  <aside class="login-brand" aria-hidden="true">
+    <div class="login-brand__inner">
+      <div class="brand-logo">CE</div>
+      <h1 class="brand-headline">Bringing <em>communities</em> together,<br>one event at a time.</h1>
+      <p class="brand-sub">Common Events helps your NGO plan, coordinate, and track every activity with ease — from registration to reporting.</p>
+      <ul class="brand-features" aria-label="Platform features">
+        <li><span class="brand-dot"></span>Centralised event management</li>
+        <li><span class="brand-dot"></span>Role-based access control</li>
+        <li><span class="brand-dot"></span>Real-time participant tracking</li>
+      </ul>
+    </div>
+    <div class="brand-deco" aria-hidden="true">
+      <div class="brand-c brand-c1"></div>
+      <div class="brand-c brand-c2"></div>
+      <div class="brand-c brand-c3"></div>
+    </div>
+  </aside>
+
+  <!-- ── Form Panel ── -->
+  <main class="login-main">
+    <div class="login-card">
+
+      <!-- Mobile logo -->
+      <div class="login-card__mobile-logo" aria-hidden="true">
+        <div class="brand-logo" style="width:40px;height:40px;font-size:14px;border-radius:10px;margin:0">CE</div>
+      </div>
+
+      <header class="login-card__header">
+        <h2 class="login-card__title">Welcome back</h2>
+        <p class="login-card__sub">Sign in to your Common Events account</p>
+      </header>
+
+      <!-- Alert container -->
+      <div class="login-alerts" id="loginAlerts" aria-live="assertive"></div>
+
+      <form class="login-form" id="loginForm" novalidate>
+
+        <!-- Username -->
+        <div class="ui-field" data-field id="usernameField">
+          <label class="ui-field__label" for="username">
+            Username <span class="ui-field__req" aria-hidden="true">*</span>
+          </label>
+          <div class="ui-field__ctrl">
+            <input class="ui-field__input" type="text" id="username" name="username"
+                   placeholder="Enter your username" autocomplete="username"
+                   spellcheck="false" aria-required="true" aria-describedby="username-err" />
+          </div>
+          <span class="ui-field__err" id="username-err" role="alert" aria-live="polite"></span>
+        </div>
+
+        <!-- Password -->
+        <div class="ui-field ui-field--pw" data-field data-pw-field id="passwordField">
+          <label class="ui-field__label" for="password">
+            Password <span class="ui-field__req" aria-hidden="true">*</span>
+          </label>
+          <div class="ui-field__ctrl">
+            <input class="ui-field__input" type="password" id="password" name="password"
+                   placeholder="Enter your password" autocomplete="current-password"
+                   aria-required="true" aria-describedby="password-err" />
+            <button type="button" class="ui-pw-btn" aria-label="Show password" data-pw-toggle>
+              <svg class="ui-pw-icon ui-pw-icon--on" width="18" height="18" viewBox="0 0 24 24"
+                   fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg class="ui-pw-icon ui-pw-icon--off" width="18" height="18" viewBox="0 0 24 24"
+                   fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+                <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+                <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
+                <line x1="2" x2="22" y1="2" y2="22"/>
+              </svg>
+            </button>
+          </div>
+          <span class="ui-field__err" id="password-err" role="alert" aria-live="polite"></span>
+        </div>
+
+        <!-- Event Type Multiselect (Common Events specific) -->
+        <div class="ui-field ui-field--ms" data-field data-ms-field id="eventTypeField">
+          <label class="ui-field__label" id="event-type-lbl">
+            Event Type <span class="ui-field__req" aria-hidden="true">*</span>
+          </label>
+          <div class="ui-ms-trigger" role="combobox" tabindex="0"
+               aria-haspopup="listbox" aria-expanded="false"
+               aria-labelledby="event-type-lbl" aria-controls="event-type-lb"
+               aria-required="true" data-ms-trigger>
+            <span class="ui-ms-ph" data-ms-ph>Select event types…</span>
+            <span class="ui-ms-tags" data-ms-tags></span>
+            <span class="ui-ms-chev" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </span>
+          </div>
+          <div class="ui-ms-panel" role="listbox" id="event-type-lb"
+               aria-multiselectable="true" aria-labelledby="event-type-lbl" data-ms-panel>
+            <div class="ui-ms-srch-wrap">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input class="ui-ms-srch" type="text" placeholder="Search event types…"
+                     aria-label="Search event types" data-ms-srch />
+            </div>
+            <ul class="ui-ms-list" data-ms-list>
+              <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="conference">
+                <span class="ui-ms-chk" aria-hidden="true"></span><span class="ui-ms-lbl">Conference</span>
+              </li>
+              <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="workshop">
+                <span class="ui-ms-chk" aria-hidden="true"></span><span class="ui-ms-lbl">Workshop</span>
+              </li>
+              <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="seminar">
+                <span class="ui-ms-chk" aria-hidden="true"></span><span class="ui-ms-lbl">Seminar</span>
+              </li>
+              <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="fundraiser">
+                <span class="ui-ms-chk" aria-hidden="true"></span><span class="ui-ms-lbl">Fundraiser</span>
+              </li>
+              <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="community-drive">
+                <span class="ui-ms-chk" aria-hidden="true"></span><span class="ui-ms-lbl">Community Drive</span>
+              </li>
+              <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="outreach">
+                <span class="ui-ms-chk" aria-hidden="true"></span><span class="ui-ms-lbl">Outreach Program</span>
+              </li>
+              <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="volunteer">
+                <span class="ui-ms-chk" aria-hidden="true"></span><span class="ui-ms-lbl">Volunteer Activity</span>
+              </li>
+              <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="gala">
+                <span class="ui-ms-chk" aria-hidden="true"></span><span class="ui-ms-lbl">Gala / Dinner</span>
+              </li>
+            </ul>
+            <div class="ui-ms-empty" data-ms-empty hidden>No options match your search.</div>
+            <div class="ui-ms-footer">
+              <button type="button" class="ui-ms-clear" data-ms-clear>Clear all</button>
+              <span class="ui-ms-count" data-ms-count></span>
+            </div>
+          </div>
+          <span class="ui-field__err" id="event-type-err" role="alert" aria-live="polite"></span>
+        </div>
+
+        <!-- Submit -->
+        <div class="login-form__submit">
+          <button type="submit" class="ui-btn ui-btn--primary ui-btn--full" id="submitBtn">
+            <span class="ui-btn__lbl">Sign In</span>
+            <span class="ui-btn__spin" aria-hidden="true"></span>
+          </button>
+        </div>
+
+      </form>
+
+      <footer class="login-card__footer">
+        Having trouble? <a href="#">Contact your administrator</a>
+      </footer>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ── UITextbox ── */
+const UITextbox=(()=>{'use strict';const q=(el,s)=>el.querySelector(s);function setError(f,m){f.classList.add('ui-field--error');f.classList.remove('ui-field--success');const e=q(f,'.ui-field__err');if(e)e.textContent=m;const i=q(f,'.ui-field__input');if(i)i.setAttribute('aria-invalid','true')}function clearError(f){f.classList.remove('ui-field--error');const e=q(f,'.ui-field__err');if(e)e.textContent='';const i=q(f,'.ui-field__input');if(i)i.removeAttribute('aria-invalid')}function getValue(f){const i=q(f,'.ui-field__input');return i?i.value.trim():''}function validate(f,opts={}){const{required=false,minLength,maxLength,pattern,patternMsg='Invalid format',label}=opts;const lbl=label||(q(f,'.ui-field__label')?.textContent.replace('*','').trim())||'This field';const val=getValue(f);if(required&&!val){setError(f,`${lbl} is required.`);return false}if(val&&minLength&&val.length<minLength){setError(f,`${lbl} must be at least ${minLength} characters.`);return false}if(val&&maxLength&&val.length>maxLength){setError(f,`${lbl} must not exceed ${maxLength} characters.`);return false}if(val&&pattern&&!new RegExp(pattern).test(val)){setError(f,patternMsg);return false}clearError(f);return true}function init(f){const input=q(f,'.ui-field__input');if(!input||input.dataset.uiInit)return;input.addEventListener('input',()=>{if(f.classList.contains('ui-field--error'))clearError(f)});input.dataset.uiInit='1'}function initAll(scope=document){scope.querySelectorAll('.ui-field[data-field]').forEach(init)}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',()=>initAll()):initAll();return{init,initAll,setError,clearError,getValue,validate}})();
+
+/* ── UIPassword ── */
+const UIPassword=(()=>{'use strict';const inp=f=>f.querySelector('.ui-field__input');const btn=f=>f.querySelector('[data-pw-toggle]');function show(f){const i=inp(f),b=btn(f);if(i)i.type='text';f.dataset.vis='1';if(b)b.setAttribute('aria-label','Hide password')}function hide(f){const i=inp(f),b=btn(f);if(i)i.type='password';f.dataset.vis='0';if(b)b.setAttribute('aria-label','Show password')}const getValue=f=>{const i=inp(f);return i?i.value:''};function validate(f,opts={}){const{required=false,minLength}=opts;const val=getValue(f);if(required&&!val){UITextbox.setError(f,'Password is required.');return false}if(val&&minLength&&val.length<minLength){UITextbox.setError(f,`Password must be at least ${minLength} characters.`);return false}UITextbox.clearError(f);return true}function init(f){if(f.dataset.uiPwInit)return;if(typeof UITextbox!=='undefined')UITextbox.init(f);const b=btn(f);if(b){b.addEventListener('click',e=>{e.preventDefault();f.dataset.vis==='1'?hide(f):show(f);inp(f)?.focus()})}f.dataset.uiPwInit='1'}function initAll(scope=document){scope.querySelectorAll('[data-pw-field]').forEach(init)}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',()=>initAll()):initAll();return{init,initAll,getValue,validate,show,hide,setError:(f,m)=>UITextbox.setError(f,m),clearError:f=>UITextbox.clearError(f)}})();
+
+/* ── UIMultiselect ── */
+const UIMultiselect=(()=>{'use strict';const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');const $=(el,s)=>el.querySelector(s);const $$=(el,s)=>[...el.querySelectorAll(s)];const getTrigger=f=>$(f,'[data-ms-trigger]');const getPanel=f=>$(f,'[data-ms-panel]');const getSearch=f=>$(f,'[data-ms-srch]');const getTags=f=>$(f,'[data-ms-tags]');const getPH=f=>$(f,'[data-ms-ph]');const getCount=f=>$(f,'[data-ms-count]');const getEmpty=f=>$(f,'[data-ms-empty]');const getOpts=f=>$$(f,'[data-ms-opt]');const getErrEl=f=>$(f,'.ui-field__err');const isOpen=f=>getTrigger(f)?.getAttribute('aria-expanded')==='true';const isSel=o=>o.getAttribute('aria-selected')==='true';function open(f){getTrigger(f)?.setAttribute('aria-expanded','true');getPanel(f)?.classList.add('open');const s=getSearch(f);if(s){s.value='';filter(f,'');s.focus()}}function close(f){getTrigger(f)?.setAttribute('aria-expanded','false');getPanel(f)?.classList.remove('open');$$(f,'.focused').forEach(o=>o.classList.remove('focused'))}function renderTags(f){const tagsEl=getTags(f),ph=getPH(f),cnt=getCount(f);if(!tagsEl)return;const sel=getOpts(f).filter(isSel);tagsEl.innerHTML='';sel.forEach(o=>{const val=o.dataset.msVal;const label=($(o,'.ui-ms-lbl')?.textContent||'').trim();const t=document.createElement('span');t.className='ui-tag';t.innerHTML=`<span>${esc(label)}</span><button type="button" class="ui-tag__x" aria-label="Remove ${esc(label)}" data-rm="${esc(val)}">&#215;</button>`;tagsEl.appendChild(t)});tagsEl.querySelectorAll('[data-rm]').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const o=f.querySelector(`[data-ms-opt][data-ms-val="${b.dataset.rm}"]`);if(o)o.setAttribute('aria-selected','false');renderTags(f)})});if(ph)ph.classList.toggle('hidden',sel.length>0);if(cnt)cnt.textContent=sel.length?`${sel.length} selected`:''}function filter(f,q){const query=q.toLowerCase().trim();let vis=0;getOpts(f).forEach(o=>{const lbl=($(o,'.ui-ms-lbl')?.textContent||'').toLowerCase();const match=!query||lbl.includes(query);o.classList.toggle('filtered',!match);if(match)vis++});const emp=getEmpty(f);if(emp)emp.hidden=vis>0}function moveFocus(f,dir){const vis=getOpts(f).filter(o=>!o.classList.contains('filtered'));const cur=vis.findIndex(o=>o.classList.contains('focused'));vis.forEach(o=>o.classList.remove('focused'));let nx=cur+dir;if(nx<0)nx=vis.length-1;if(nx>=vis.length)nx=0;vis[nx]?.classList.add('focused');vis[nx]?.scrollIntoView({block:'nearest'})}function handleKey(e,f){if(!isOpen(f)){if(['Enter',' ','ArrowDown'].includes(e.key)){e.preventDefault();open(f)}return}switch(e.key){case'Escape':e.preventDefault();close(f);getTrigger(f)?.focus();break;case'ArrowDown':e.preventDefault();moveFocus(f,1);break;case'ArrowUp':e.preventDefault();moveFocus(f,-1);break;case'Enter':case' ':{const fc=$(f,'.focused');if(fc){e.preventDefault();fc.setAttribute('aria-selected',isSel(fc)?'false':'true');renderTags(f);clearError(f)}break}}}function setError(f,msg){f.classList.add('ui-field--error');const e=getErrEl(f);if(e)e.textContent=msg}function clearError(f){f.classList.remove('ui-field--error');const e=getErrEl(f);if(e)e.textContent=''}function getValues(f){return getOpts(f).filter(isSel).map(o=>o.dataset.msVal)}function validate(f,opts={}){const{required=false}=opts;if(required&&getValues(f).length===0){setError(f,'Please select at least one event type.');return false}clearError(f);return true}function init(f){if(f.dataset.uiMsInit)return;renderTags(f);const trigger=getTrigger(f),search=getSearch(f);trigger?.addEventListener('click',()=>isOpen(f)?close(f):open(f));trigger?.addEventListener('keydown',e=>handleKey(e,f));getOpts(f).forEach(o=>{o.addEventListener('click',()=>{o.setAttribute('aria-selected',isSel(o)?'false':'true');renderTags(f);clearError(f);search?.focus()})});search?.addEventListener('input',e=>{filter(f,e.target.value);$$(f,'.focused').forEach(o=>o.classList.remove('focused'))});search?.addEventListener('keydown',e=>handleKey(e,f));$(f,'[data-ms-clear]')?.addEventListener('click',()=>{getOpts(f).forEach(o=>o.setAttribute('aria-selected','false'));renderTags(f)});document.addEventListener('click',e=>{if(!f.contains(e.target))close(f)});f.dataset.uiMsInit='1'}function initAll(scope=document){scope.querySelectorAll('[data-ms-field]').forEach(init)}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',()=>initAll()):initAll();return{init,initAll,getValues,setError,clearError,validate,open,close}})();
+
+/* ── UIButton ── */
+const UIButton=(()=>{'use strict';function setLoading(btn,on){if(!btn)return;btn.classList.toggle('ui-btn--loading',on);on?btn.setAttribute('aria-busy','true'):btn.removeAttribute('aria-busy')}function setDisabled(btn,on){if(!btn)return;btn.disabled=on}return{setLoading,setDisabled}})();
+
+/* ── UIAlert ── */
+const UIAlert=(()=>{'use strict';const ICONS={error:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,warning:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,success:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,info:`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`};const CLOSE=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');function hide(el){if(!el)return;el.classList.add('dismissing');const done=()=>{el.hidden=true;el.classList.remove('dismissing');el.removeEventListener('animationend',done)};el.addEventListener('animationend',done)}function show(el){if(!el)return;el.hidden=false;el.classList.remove('hidden','dismissing')}function create(type,message,title,dismissible=true){const el=document.createElement('div');el.className=`ui-alert ui-alert--${type}${dismissible?' ui-alert--dismissible':''}`;el.setAttribute('role',type==='error'||type==='warning'?'alert':'status');el.setAttribute('aria-live',type==='error'||type==='warning'?'assertive':'polite');el.setAttribute('data-alert','');el.innerHTML=`<span class="ui-alert__icon" aria-hidden="true">${ICONS[type]||ICONS.info}</span><div class="ui-alert__body">${title?`<span class="ui-alert__title">${esc(title)}</span>`:''}<span class="ui-alert__msg">${esc(message)}</span></div>${dismissible?`<button type="button" class="ui-alert__x" aria-label="Dismiss" data-alert-close>${CLOSE}</button>`:''}`;el.querySelector('[data-alert-close]')?.addEventListener('click',()=>hide(el));return el}function showInContainer(container,type,message,title,autoDismissMs){if(!container)return;container.querySelectorAll(`.ui-alert--${type}`).forEach(a=>a.remove());const el=create(type,message,title);container.appendChild(el);if(autoDismissMs)setTimeout(()=>hide(el),autoDismissMs);return el}return{show,hide,create,showInContainer}})();
+
+/* ── Login page logic ── */
+(function () {
+  const form           = document.getElementById('loginForm');
+  const submitBtn      = document.getElementById('submitBtn');
+  const alertsEl       = document.getElementById('loginAlerts');
+  const usernameField  = document.getElementById('usernameField');
+  const passwordField  = document.getElementById('passwordField');
+  const eventTypeField = document.getElementById('eventTypeField');
+  if (!form) return;
+
+  function validateForm() {
+    let ok = true;
+    if (!UITextbox.validate(usernameField,   { required: true, label: 'Username'  })) ok = false;
+    if (!UIPassword.validate(passwordField,  { required: true                      })) ok = false;
+    if (!UIMultiselect.validate(eventTypeField, { required: true                   })) ok = false;
+    return ok;
+  }
+
+  function focusFirst() {
+    form.querySelector('.ui-field--error .ui-field__input, .ui-field--error .ui-ms-trigger')?.focus();
+  }
+
+  // Replace with a real fetch() call when integrating
+  function submitAPI(data) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        data.username.toLowerCase() === 'fail'
+          ? reject(new Error('Invalid username or password. Please try again.'))
+          : resolve({ ok: true });
+      }, 1600);
+    });
+  }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    alertsEl.innerHTML = '';
+    if (!validateForm()) {
+      UIAlert.showInContainer(alertsEl, 'error',
+        'One or more required fields are missing or invalid.',
+        'Please review your input');
+      focusFirst();
+      return;
+    }
+
+    const data = {
+      username:   UITextbox.getValue(usernameField),
+      password:   UIPassword.getValue(passwordField),
+      eventTypes: UIMultiselect.getValues(eventTypeField),
+    };
+
+    UIButton.setLoading(submitBtn, true);
+    try {
+      await submitAPI(data);
+      UIAlert.showInContainer(alertsEl, 'success',
+        'You have been signed in successfully. Redirecting…',
+        'Welcome back!');
+      UIButton.setLoading(submitBtn, false);
+    } catch (err) {
+      UIButton.setLoading(submitBtn, false);
+      UIAlert.showInContainer(alertsEl, 'error',
+        err.message || 'An unexpected error occurred.',
+        'Sign-in failed');
+      document.getElementById('username')?.focus();
+    }
+  });
+
+  form.addEventListener('input', () => { alertsEl.innerHTML = ''; });
+})();
+</script>
+</body>
+</html>

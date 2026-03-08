@@ -1,0 +1,111 @@
+/* ================================================================
+   COMPONENT: Button
+   FILE: components/button/button.css
+   ================================================================ */
+
+.ui-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 22px;
+  font-family: var(--ui-font);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  border: 1.5px solid transparent;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  outline: none;
+  text-decoration: none;
+  user-select: none;
+  transition:
+    background var(--t-base),
+    color var(--t-base),
+    border-color var(--t-base),
+    box-shadow var(--t-base),
+    transform var(--t-fast);
+  overflow: hidden;
+}
+.ui-btn:active:not(:disabled) { transform: scale(0.975); }
+.ui-btn:focus-visible          { box-shadow: var(--sh-focus); }
+.ui-btn:disabled               { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+
+/* ---- Inner label (hidden while loading) ---- */
+.ui-btn__lbl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity var(--t-fast);
+}
+
+/* ---- Spinner ---- */
+.ui-btn__spin {
+  position: absolute;
+  width: 18px; height: 18px;
+  border: 2.5px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: uiBtnSpin 0.7s linear infinite;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-fast);
+}
+@keyframes uiBtnSpin { to { transform: rotate(360deg); } }
+
+/* ---- Loading state ---- */
+.ui-btn--loading .ui-btn__lbl  { opacity: 0; }
+.ui-btn--loading .ui-btn__spin { opacity: 1; }
+.ui-btn--loading               { pointer-events: none; }
+
+/* ---- Sizes ---- */
+.ui-btn--sm   { height: 36px; padding: 0 16px; font-size: 13px; }
+.ui-btn--full { width: 100%; }
+
+/* ---- Variant: Primary ---- */
+.ui-btn--primary {
+  background: var(--ui-primary);
+  color: #fff;
+  border-color: var(--ui-primary);
+  box-shadow: 0 1px 3px rgba(26,107,74,.28), inset 0 1px 0 rgba(255,255,255,.08);
+}
+.ui-btn--primary:hover:not(:disabled) {
+  background: var(--ui-primary-dark);
+  border-color: var(--ui-primary-dark);
+  box-shadow: 0 4px 14px rgba(26,107,74,.35);
+}
+.ui-btn--primary:focus-visible {
+  box-shadow: var(--sh-focus), 0 1px 3px rgba(26,107,74,.28);
+}
+
+/* ---- Variant: Secondary ---- */
+.ui-btn--secondary {
+  background: var(--ui-white);
+  color: var(--ui-primary);
+  border-color: var(--ui-primary);
+}
+.ui-btn--secondary:hover:not(:disabled) { background: var(--ui-primary-light); }
+
+/* ---- Variant: Ghost ---- */
+.ui-btn--ghost {
+  background: transparent;
+  color: var(--ui-text-2);
+  border-color: var(--ui-border);
+}
+.ui-btn--ghost:hover:not(:disabled) {
+  background: var(--ui-surface-alt);
+  border-color: var(--ui-border-mid);
+  color: var(--ui-text-1);
+}
+
+/* ---- Variant: Danger ---- */
+.ui-btn--danger {
+  background: var(--ui-error);
+  color: #fff;
+  border-color: var(--ui-error);
+}
+.ui-btn--danger:hover:not(:disabled) { background: #a8211a; border-color: #a8211a; }
+.ui-btn--danger:focus-visible        { box-shadow: 0 0 0 3px var(--ui-error-glow); }

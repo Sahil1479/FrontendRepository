@@ -1,0 +1,58 @@
+/* ================================================================
+   COMPONENT: Alert / Notification Banner
+   FILE: components/alert/alert.css
+   ================================================================ */
+
+.ui-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  font-size: 13.5px;
+  line-height: 1.45;
+  animation: uiAlertIn 200ms ease;
+  position: relative;
+}
+@keyframes uiAlertIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ui-alert__icon  { flex-shrink: 0; display: flex; align-items: center; margin-top: 1px; }
+.ui-alert__body  { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.ui-alert__title { font-weight: 700; font-size: 13px; }
+.ui-alert__msg   { font-weight: 400; opacity: 0.9; }
+
+/* Close button */
+.ui-alert__x {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+  background: none; border: none; cursor: pointer;
+  border-radius: var(--r-sm);
+  color: inherit; opacity: 0.6;
+  padding: 0;
+  transition: opacity var(--t-fast), background var(--t-fast);
+}
+.ui-alert__x:hover { opacity: 1; background: rgba(0,0,0,.09); }
+
+.ui-alert--dismissible        { padding-right: 38px; }
+.ui-alert--dismissible .ui-alert__x { position: absolute; right: 8px; top: 9px; }
+
+/* ---- Variants ---- */
+.ui-alert--error   { background: var(--ui-error-bg);   border-color: var(--ui-error-border);   color: var(--ui-error);   }
+.ui-alert--warning { background: var(--ui-warning-bg); border-color: var(--ui-warning-border); color: var(--ui-warning); }
+.ui-alert--success { background: var(--ui-success-bg); border-color: var(--ui-success-border); color: var(--ui-success); }
+.ui-alert--info    { background: var(--ui-info-bg);    border-color: var(--ui-info-border);    color: var(--ui-info);    }
+
+/* ---- Visibility ---- */
+.ui-alert[hidden], .ui-alert.hidden { display: none; }
+
+.ui-alert.dismissing {
+  animation: uiAlertOut 180ms ease forwards;
+}
+@keyframes uiAlertOut {
+  to { opacity: 0; transform: translateY(-3px); max-height: 0; padding: 0; margin: 0; overflow: hidden; }
+}

@@ -1,0 +1,106 @@
+/* ================================================================
+   UI REGISTRY — Design Tokens
+   FILE: assets/theme.css
+   ----------------------------------------------------------------
+   Generic design token file. Override these variables in your
+   project to apply a custom theme without touching component code.
+   ================================================================ */
+
+:root {
+  /* --- Primary brand colour --- */
+  --ui-primary:        #1a6b4a;
+  --ui-primary-dark:   #134f38;
+  --ui-primary-mid:    #1d7a55;
+  --ui-primary-light:  #e8f5ef;
+  --ui-primary-glow:   rgba(26, 107, 74, 0.18);
+
+  /* --- Neutrals --- */
+  --ui-white:          #ffffff;
+  --ui-bg:             #f1f4f2;
+  --ui-surface:        #ffffff;
+  --ui-surface-alt:    #f7faf8;
+  --ui-border:         #d0dbd6;
+  --ui-border-mid:     #b8cdc5;
+  --ui-border-focus:   #1a6b4a;
+
+  --ui-text-1:         #19251f;
+  --ui-text-2:         #385048;
+  --ui-text-3:         #66877a;
+  --ui-text-4:         #9ab5aa;
+
+  /* --- Semantic colours --- */
+  --ui-error:          #c0281d;
+  --ui-error-bg:       #fef2f1;
+  --ui-error-border:   #f0b4b0;
+  --ui-error-glow:     rgba(192, 40, 29, 0.15);
+
+  --ui-warning:        #b86d06;
+  --ui-warning-bg:     #fef7ea;
+  --ui-warning-border: #f0cf84;
+
+  --ui-success:        #1a6b4a;
+  --ui-success-bg:     #e8f5ef;
+  --ui-success-border: #96cdb2;
+
+  --ui-info:           #1358a0;
+  --ui-info-bg:        #e7eefb;
+  --ui-info-border:    #97bce6;
+
+  /* --- Typography (system stack — no external deps) --- */
+  --ui-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
+             'Helvetica Neue', Arial, sans-serif;
+  --ui-font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+
+  /* --- Spacing --- */
+  --s1: 4px;   --s2: 8px;   --s3: 12px;  --s4: 16px;  --s5: 20px;
+  --s6: 24px;  --s8: 32px;  --s10: 40px; --s12: 48px; --s16: 64px;
+
+  /* --- Radii --- */
+  --r-sm:   4px;
+  --r-md:   8px;
+  --r-lg:   12px;
+  --r-xl:   16px;
+  --r-full: 9999px;
+
+  /* --- Shadows --- */
+  --sh-xs:    0 1px 2px rgba(15, 30, 22, 0.06);
+  --sh-sm:    0 2px 8px rgba(15, 30, 22, 0.09),  0 1px 2px rgba(15, 30, 22, 0.04);
+  --sh-md:    0 4px 16px rgba(15, 30, 22, 0.10),  0 2px 4px rgba(15, 30, 22, 0.05);
+  --sh-lg:    0 8px 30px rgba(15, 30, 22, 0.12),  0 2px 8px rgba(15, 30, 22, 0.06);
+  --sh-xl:    0 20px 60px rgba(15, 30, 22, 0.15), 0 4px 16px rgba(15, 30, 22, 0.08);
+  --sh-focus: 0 0 0 3px var(--ui-primary-glow);
+
+  /* --- Transitions --- */
+  --t-fast:   100ms ease;
+  --t-base:   180ms ease;
+  --t-bounce: 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* --- Z-index --- */
+  --z-dropdown: 100;
+  --z-modal:    300;
+  --z-toast:    400;
+}
+
+/* ---- Base Reset ---- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--ui-font);
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--ui-text-1);
+  background: var(--ui-bg);
+  line-height: 1.55;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}

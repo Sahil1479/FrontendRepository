@@ -1,0 +1,63 @@
+<!--
+  COMPONENT: Button
+  FILE: components/button/button.html
+  ─────────────────────────────────────────
+  Dependencies: button.css  ·  button.js
+
+  VARIANTS  (modifier on .ui-btn):
+    ui-btn--primary    default action
+    ui-btn--secondary  outlined / secondary action
+    ui-btn--ghost      minimal / tertiary
+    ui-btn--danger     destructive action
+
+  SIZES:
+    default — 44px tall
+    ui-btn--sm — 36px tall
+
+  MODIFIERS:
+    ui-btn--full    full-width block button
+    ui-btn--loading via JS: UIButton.setLoading(el, true)
+
+  STATES:
+    [disabled] attribute to disable
+
+  JS API:
+    UIButton.setLoading(btnEl, true|false)
+    UIButton.setDisabled(btnEl, true|false)
+-->
+
+<!-- Primary -->
+<button type="submit" class="ui-btn ui-btn--primary">
+  <span class="ui-btn__lbl">Submit</span>
+  <span class="ui-btn__spin" aria-hidden="true"></span>
+</button>
+
+<!-- Secondary -->
+<button type="button" class="ui-btn ui-btn--secondary">
+  <span class="ui-btn__lbl">Cancel</span>
+  <span class="ui-btn__spin" aria-hidden="true"></span>
+</button>
+
+<!-- Ghost -->
+<button type="button" class="ui-btn ui-btn--ghost">
+  <span class="ui-btn__lbl">Learn More</span>
+  <span class="ui-btn__spin" aria-hidden="true"></span>
+</button>
+
+<!-- Danger -->
+<button type="button" class="ui-btn ui-btn--danger">
+  <span class="ui-btn__lbl">Delete</span>
+  <span class="ui-btn__spin" aria-hidden="true"></span>
+</button>
+
+<!-- Small -->
+<button type="button" class="ui-btn ui-btn--secondary ui-btn--sm">
+  <span class="ui-btn__lbl">Small Button</span>
+  <span class="ui-btn__spin" aria-hidden="true"></span>
+</button>
+
+<!-- Full width primary -->
+<button type="submit" class="ui-btn ui-btn--primary ui-btn--full">
+  <span class="ui-btn__lbl">Sign In</span>
+  <span class="ui-btn__spin" aria-hidden="true"></span>
+</button>

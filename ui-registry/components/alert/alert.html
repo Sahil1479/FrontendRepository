@@ -1,0 +1,89 @@
+<!--
+  COMPONENT: Alert / Notification Banner
+  FILE: components/alert/alert.html
+  ─────────────────────────────────────────
+  Dependencies: alert.css  ·  alert.js
+
+  VARIANTS (modifier on .ui-alert):
+    ui-alert--error    red  — validation failures, system errors
+    ui-alert--warning  amber — cautions, expiring sessions
+    ui-alert--success  green — confirmations
+    ui-alert--info     blue  — neutral information
+
+  Add .ui-alert--dismissible for a close (×) button.
+
+  JS API:
+    UIAlert.show(alertEl)
+    UIAlert.hide(alertEl)
+    UIAlert.setMessage(alertEl, title, message)
+    UIAlert.create(type, message, title?, dismissible?)   → element
+    UIAlert.showInContainer(containerEl, type, message, title?, autoDismissMs?)
+-->
+
+<!-- Error (dismissible) -->
+<div class="ui-alert ui-alert--error ui-alert--dismissible" role="alert" aria-live="assertive" data-alert>
+  <span class="ui-alert__icon" aria-hidden="true">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+  </span>
+  <div class="ui-alert__body">
+    <span class="ui-alert__title">Error</span>
+    <span class="ui-alert__msg">Something went wrong. Please try again.</span>
+  </div>
+  <button type="button" class="ui-alert__x" aria-label="Dismiss" data-alert-close>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+</div>
+
+<!-- Warning (dismissible) -->
+<div class="ui-alert ui-alert--warning ui-alert--dismissible" role="alert" aria-live="polite" data-alert>
+  <span class="ui-alert__icon" aria-hidden="true">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+  </span>
+  <div class="ui-alert__body">
+    <span class="ui-alert__title">Warning</span>
+    <span class="ui-alert__msg">Please review the information below.</span>
+  </div>
+  <button type="button" class="ui-alert__x" aria-label="Dismiss" data-alert-close>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+</div>
+
+<!-- Success (dismissible) -->
+<div class="ui-alert ui-alert--success ui-alert--dismissible" role="status" aria-live="polite" data-alert>
+  <span class="ui-alert__icon" aria-hidden="true">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+    </svg>
+  </span>
+  <div class="ui-alert__body">
+    <span class="ui-alert__title">Success</span>
+    <span class="ui-alert__msg">Your changes have been saved.</span>
+  </div>
+  <button type="button" class="ui-alert__x" aria-label="Dismiss" data-alert-close>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+</div>
+
+<!-- Info (no dismiss) -->
+<div class="ui-alert ui-alert--info" role="status" aria-live="polite" data-alert>
+  <span class="ui-alert__icon" aria-hidden="true">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+    </svg>
+  </span>
+  <div class="ui-alert__body">
+    <span class="ui-alert__msg">This is an informational message.</span>
+  </div>
+</div>

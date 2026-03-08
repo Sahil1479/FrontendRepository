@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UI Registry — Component Library</title>
+  <style>
+    /* ---- Tokens ---- */
+    :root {
+      --ui-primary:        #1a6b4a;
+      --ui-primary-dark:   #134f38;
+      --ui-primary-light:  #e8f5ef;
+      --ui-primary-glow:   rgba(26,107,74,.18);
+      --ui-white:          #fff;
+      --ui-bg:             #f1f4f2;
+      --ui-surface:        #fff;
+      --ui-surface-alt:    #f7faf8;
+      --ui-border:         #d0dbd6;
+      --ui-border-mid:     #b8cdc5;
+      --ui-border-focus:   #1a6b4a;
+      --ui-text-1:         #19251f;
+      --ui-text-2:         #385048;
+      --ui-text-3:         #66877a;
+      --ui-text-4:         #9ab5aa;
+      --ui-error:          #c0281d;
+      --ui-error-bg:       #fef2f1;
+      --ui-error-border:   #f0b4b0;
+      --ui-error-glow:     rgba(192,40,29,.15);
+      --ui-warning:        #b86d06;
+      --ui-warning-bg:     #fef7ea;
+      --ui-warning-border: #f0cf84;
+      --ui-success:        #1a6b4a;
+      --ui-success-bg:     #e8f5ef;
+      --ui-success-border: #96cdb2;
+      --ui-info:           #1358a0;
+      --ui-info-bg:        #e7eefb;
+      --ui-info-border:    #97bce6;
+      --ui-font: -apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,'Helvetica Neue',Arial,sans-serif;
+      --r-sm:4px; --r-md:8px; --r-lg:12px; --r-xl:16px; --r-full:9999px;
+      --sh-focus: 0 0 0 3px var(--ui-primary-glow);
+      --sh-sm:  0 2px 8px rgba(15,30,22,.09),0 1px 2px rgba(15,30,22,.04);
+      --sh-md:  0 4px 16px rgba(15,30,22,.10),0 2px 4px rgba(15,30,22,.05);
+      --sh-lg:  0 8px 30px rgba(15,30,22,.12),0 2px 8px rgba(15,30,22,.06);
+      --sh-xl:  0 20px 60px rgba(15,30,22,.15),0 4px 16px rgba(15,30,22,.08);
+      --t-fast: 100ms ease; --t-base: 180ms ease;
+      --z-dropdown: 100;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    body{font-family:var(--ui-font);font-size:15px;color:var(--ui-text-1);background:var(--ui-bg);line-height:1.55}
+
+    /* ================================================================
+       REGISTRY SHELL
+       ================================================================ */
+    .shell { display:flex; min-height:100vh }
+
+    /* ---- Sidebar ---- */
+    .sidebar {
+      position: sticky; top: 0; height: 100vh; width: 230px; flex-shrink: 0;
+      background: var(--ui-surface); border-right: 1px solid var(--ui-border);
+      overflow-y: auto; display: flex; flex-direction: column;
+    }
+    .sb-brand {
+      display: flex; align-items: center; gap: 10px;
+      padding: 20px 16px 18px; border-bottom: 1px solid var(--ui-border);
+    }
+    .sb-logo {
+      width: 34px; height: 34px; background: var(--ui-primary); border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: 13px; flex-shrink: 0;
+    }
+    .sb-name { font-size: 13px; font-weight: 700; color: var(--ui-text-1); line-height: 1.3 }
+    .sb-ver  { font-size: 11px; color: var(--ui-text-3); margin-top: 1px }
+    .sb-nav  { padding: 10px 10px 20px; flex: 1 }
+    .sb-grp  { margin-bottom: 4px }
+    .sb-grp-lbl {
+      display: block; padding: 10px 6px 5px;
+      font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--ui-text-4);
+    }
+    .sb-link {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 10px; border-radius: var(--r-md);
+      font-size: 13.5px; color: var(--ui-text-2); text-decoration: none; font-weight: 500;
+      transition: background .1s, color .1s; cursor: pointer;
+    }
+    .sb-link:hover  { background: var(--ui-surface-alt); color: var(--ui-text-1) }
+    .sb-link.active { background: var(--ui-primary-light); color: var(--ui-primary-dark); font-weight: 600 }
+    .sb-badge {
+      font-size: 10px; font-weight: 600; background: var(--ui-primary-light);
+      color: var(--ui-primary); padding: 1px 7px; border-radius: var(--r-full);
+    }
+
+    /* ---- Content ---- */
+    .content { flex: 1; padding: 48px 52px; max-width: 940px }
+
+    /* ---- Page header ---- */
+    .page-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ui-primary); margin-bottom: 8px }
+    .page-title   { font-size: 32px; font-weight: 700; color: var(--ui-text-1); letter-spacing: -.03em; line-height: 1.2; margin-bottom: 10px }
+    .page-desc    { font-size: 14.5px; color: var(--ui-text-3); max-width: 580px; line-height: 1.65; margin-bottom: 36px }
+    .page-hd      { border-bottom: 1px solid var(--ui-border); padding-bottom: 32px; margin-bottom: 36px }
+
+    /* ---- Stats ---- */
+    .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 52px }
+    .stat  { background: var(--ui-surface); border: 1px solid var(--ui-border); border-radius: var(--r-lg); padding: 16px 20px }
+    .stat__val { font-size: 26px; font-weight: 700; color: var(--ui-primary); letter-spacing: -.02em; line-height: 1 }
+    .stat__lbl { font-size: 11px; font-weight: 600; color: var(--ui-text-3); text-transform: uppercase; letter-spacing: .07em; margin-top: 5px }
+
+    /* ---- Section ---- */
+    .section      { margin-bottom: 60px; scroll-margin-top: 32px }
+    .section-hd   { display: flex; align-items: baseline; gap: 10px; margin-bottom: 20px }
+    .section-title{ font-size: 19px; font-weight: 700; color: var(--ui-text-1); letter-spacing: -.015em }
+    .section-tag  { font-size: 11px; font-weight: 600; color: var(--ui-primary); background: var(--ui-primary-light); padding: 2px 9px; border-radius: var(--r-full) }
+
+    /* ---- Demo card ---- */
+    .demo-card     { background: var(--ui-surface); border: 1px solid var(--ui-border); border-radius: var(--r-lg); overflow: hidden; margin-bottom: 12px }
+    .demo-card__lbl{ font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--ui-text-3); padding: 10px 18px; background: var(--ui-surface-alt); border-bottom: 1px solid var(--ui-border) }
+    .demo-card__body{ padding: 28px 22px; display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start }
+    .demo-card__body--col { flex-direction: column }
+    .demo-card__body .ui-field { max-width: 360px; width: 100% }
+
+    /* ---- Helpers ---- */
+    .btn-row    { display: flex; flex-wrap: wrap; gap: 10px; align-items: center }
+    .alert-stack{ display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 520px }
+    hr.divider  { border: none; border-top: 1px solid var(--ui-border); margin: 48px 0 }
+
+    /* ---- Project template card ---- */
+    .tpl-card {
+      display: flex; align-items: center; gap: 16px; padding: 18px 20px;
+      background: var(--ui-surface); border: 1px solid var(--ui-border);
+      border-radius: var(--r-lg); text-decoration: none; color: inherit;
+      transition: border-color .18s, box-shadow .18s, transform .1s;
+      margin-bottom: 10px;
+    }
+    .tpl-card:hover { border-color: var(--ui-primary); box-shadow: var(--sh-md); transform: translateY(-1px) }
+    .tpl-icon {
+      width: 46px; height: 46px; background: var(--ui-primary-light); border-radius: var(--r-md);
+      display: flex; align-items: center; justify-content: center; color: var(--ui-primary); flex-shrink: 0;
+    }
+    .tpl-name{ font-size: 14.5px; font-weight: 600; color: var(--ui-text-1); margin-bottom: 2px }
+    .tpl-meta{ font-size: 12px; color: var(--ui-text-3) }
+    .tpl-arr { color: var(--ui-text-3); margin-left: auto; transition: color .1s, transform .1s }
+    .tpl-card:hover .tpl-arr { color: var(--ui-primary); transform: translateX(3px) }
+
+    /* ================================================================
+       ALL COMPONENT STYLES (inlined — works as a local file)
+       ================================================================ */
+
+    /* textbox */
+    .ui-field{display:flex;flex-direction:column;gap:6px;width:100%}
+    .ui-field__label{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;color:var(--ui-text-2);letter-spacing:.06em;text-transform:uppercase;user-select:none}
+    .ui-field__req{color:var(--ui-error);font-size:14px;line-height:1;font-weight:700}
+    .ui-field__ctrl{position:relative;display:flex;align-items:center}
+    .ui-field__input{width:100%;height:44px;padding:0 14px;font-family:var(--ui-font);font-size:14px;font-weight:400;color:var(--ui-text-1);background:var(--ui-surface);border:1.5px solid var(--ui-border);border-radius:var(--r-md);outline:none;appearance:none;transition:border-color var(--t-base),box-shadow var(--t-base),background var(--t-base)}
+    .ui-field__input::placeholder{color:var(--ui-text-4)}
+    .ui-field__input:hover:not(:focus):not(:disabled){border-color:var(--ui-border-mid)}
+    .ui-field__input:focus{border-color:var(--ui-border-focus);box-shadow:var(--sh-focus);background:var(--ui-white)}
+    .ui-field__input:disabled{background:var(--ui-surface-alt);color:var(--ui-text-3);cursor:not-allowed;opacity:.65}
+    .ui-field__hint{font-size:12px;color:var(--ui-text-3);line-height:1.5}
+    .ui-field__err{font-size:12px;font-weight:500;color:var(--ui-error);display:none;line-height:1.4}
+    .ui-field--error .ui-field__input{border-color:var(--ui-error);background:var(--ui-error-bg)}
+    .ui-field--error .ui-field__input:focus{box-shadow:0 0 0 3px var(--ui-error-glow)}
+    .ui-field--error .ui-field__err{display:block}
+    .ui-field--error .ui-field__hint{display:none}
+    .ui-field--success .ui-field__input{border-color:var(--ui-success)}
+
+    /* password */
+    .ui-field--pw .ui-field__input{padding-right:46px}
+    .ui-pw-btn{position:absolute;right:1px;top:1px;bottom:1px;width:42px;display:flex;align-items:center;justify-content:center;background:none;border:none;border-radius:0 calc(var(--r-md) - 1px) calc(var(--r-md) - 1px) 0;cursor:pointer;color:var(--ui-text-3);padding:0;outline:none;transition:color var(--t-base),background var(--t-base)}
+    .ui-pw-btn:hover{color:var(--ui-primary);background:var(--ui-primary-light)}
+    .ui-pw-icon{display:block;pointer-events:none}
+    .ui-pw-icon--off{display:none}
+    .ui-field--pw[data-vis="1"] .ui-pw-icon--on{display:none}
+    .ui-field--pw[data-vis="1"] .ui-pw-icon--off{display:block}
+    .ui-field--pw[data-vis="1"] .ui-pw-btn{color:var(--ui-primary)}
+
+    /* multiselect */
+    .ui-field--ms{position:relative}
+    .ui-ms-trigger{position:relative;display:flex;align-items:center;flex-wrap:wrap;gap:5px;min-height:44px;padding:6px 42px 6px 14px;background:var(--ui-surface);border:1.5px solid var(--ui-border);border-radius:var(--r-md);cursor:pointer;user-select:none;outline:none;transition:border-color var(--t-base),box-shadow var(--t-base)}
+    .ui-ms-trigger:hover{border-color:var(--ui-border-mid)}
+    .ui-ms-trigger:focus,.ui-ms-trigger[aria-expanded="true"]{border-color:var(--ui-border-focus);box-shadow:var(--sh-focus);background:var(--ui-white)}
+    .ui-field--error .ui-ms-trigger{border-color:var(--ui-error);background:var(--ui-error-bg)}
+    .ui-ms-ph{font-size:14px;color:var(--ui-text-4);pointer-events:none}
+    .ui-ms-ph.hidden{display:none}
+    .ui-ms-tags{display:flex;flex-wrap:wrap;gap:4px;flex:1}
+    .ui-tag{display:inline-flex;align-items:center;gap:3px;height:23px;padding:0 3px 0 9px;background:var(--ui-primary-light);color:var(--ui-primary-dark);border:1px solid rgba(26,107,74,.22);border-radius:var(--r-full);font-size:12px;font-weight:600;white-space:nowrap;animation:tagIn 150ms cubic-bezier(.34,1.56,.64,1)}
+    @keyframes tagIn{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+    .ui-tag__x{display:flex;align-items:center;justify-content:center;width:16px;height:16px;border:none;background:none;color:inherit;cursor:pointer;border-radius:50%;font-size:14px;line-height:1;padding:0;opacity:.7;transition:opacity var(--t-fast),background var(--t-fast)}
+    .ui-tag__x:hover{opacity:1;background:rgba(26,107,74,.2)}
+    .ui-ms-chev{position:absolute;right:13px;top:50%;transform:translateY(-50%);display:flex;color:var(--ui-text-3);pointer-events:none;transition:transform var(--t-base),color var(--t-base)}
+    .ui-ms-trigger[aria-expanded="true"] .ui-ms-chev{transform:translateY(-50%) rotate(180deg);color:var(--ui-primary)}
+    .ui-ms-panel{position:absolute;z-index:var(--z-dropdown);top:calc(100% + 5px);left:0;right:0;background:var(--ui-surface);border:1.5px solid var(--ui-border);border-radius:var(--r-lg);box-shadow:var(--sh-lg);overflow:hidden;display:none;flex-direction:column}
+    .ui-ms-panel.open{display:flex;animation:panelIn 150ms ease}
+    @keyframes panelIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+    .ui-ms-srch-wrap{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--ui-border);background:var(--ui-surface-alt)}
+    .ui-ms-srch-wrap svg{color:var(--ui-text-3);flex-shrink:0}
+    .ui-ms-srch{flex:1;border:none;outline:none;font-family:var(--ui-font);font-size:13px;color:var(--ui-text-1);background:transparent}
+    .ui-ms-srch::placeholder{color:var(--ui-text-4)}
+    .ui-ms-list{list-style:none;max-height:210px;overflow-y:auto;padding:5px 0;scrollbar-width:thin;scrollbar-color:var(--ui-border) transparent}
+    .ui-ms-list::-webkit-scrollbar{width:4px}
+    .ui-ms-list::-webkit-scrollbar-thumb{background:var(--ui-border);border-radius:99px}
+    .ui-ms-opt{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;font-size:13.5px;color:var(--ui-text-1);transition:background var(--t-fast)}
+    .ui-ms-opt:hover{background:var(--ui-surface-alt)}
+    .ui-ms-opt[aria-selected="true"]{background:var(--ui-primary-light);color:var(--ui-primary-dark)}
+    .ui-ms-opt.focused{background:var(--ui-surface-alt)}
+    .ui-ms-opt.filtered{display:none}
+    .ui-ms-chk{width:16px;height:16px;border:1.5px solid var(--ui-border-mid);border-radius:4px;background:var(--ui-white);flex-shrink:0;position:relative;transition:border-color var(--t-fast),background var(--t-fast)}
+    .ui-ms-opt[aria-selected="true"] .ui-ms-chk{background:var(--ui-primary);border-color:var(--ui-primary)}
+    .ui-ms-opt[aria-selected="true"] .ui-ms-chk::after{content:'';position:absolute;left:4px;top:1px;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg)}
+    .ui-ms-empty{padding:16px;text-align:center;font-size:13px;color:var(--ui-text-3)}
+    .ui-ms-footer{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-top:1px solid var(--ui-border);background:var(--ui-surface-alt)}
+    .ui-ms-clear{font-family:var(--ui-font);font-size:12px;font-weight:600;color:var(--ui-primary);background:none;border:none;cursor:pointer;padding:2px 0;text-decoration:underline;text-underline-offset:2px}
+    .ui-ms-clear:hover{color:var(--ui-primary-dark)}
+    .ui-ms-count{font-size:12px;color:var(--ui-text-3)}
+
+    /* button */
+    .ui-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 22px;font-family:var(--ui-font);font-size:14px;font-weight:600;letter-spacing:.01em;white-space:nowrap;border:1.5px solid transparent;border-radius:var(--r-md);cursor:pointer;outline:none;user-select:none;transition:background var(--t-base),color var(--t-base),border-color var(--t-base),box-shadow var(--t-base),transform var(--t-fast);overflow:hidden}
+    .ui-btn:active:not(:disabled){transform:scale(.975)}
+    .ui-btn:focus-visible{box-shadow:var(--sh-focus)}
+    .ui-btn:disabled{opacity:.45;cursor:not-allowed;pointer-events:none}
+    .ui-btn__lbl{display:flex;align-items:center;gap:6px;transition:opacity var(--t-fast)}
+    .ui-btn__spin{position:absolute;width:18px;height:18px;border:2.5px solid currentColor;border-top-color:transparent;border-radius:50%;animation:uiBtnSpin .7s linear infinite;opacity:0;pointer-events:none;transition:opacity var(--t-fast)}
+    @keyframes uiBtnSpin{to{transform:rotate(360deg)}}
+    .ui-btn--loading .ui-btn__lbl{opacity:0}
+    .ui-btn--loading .ui-btn__spin{opacity:1}
+    .ui-btn--loading{pointer-events:none}
+    .ui-btn--sm{height:36px;padding:0 16px;font-size:13px}
+    .ui-btn--full{width:100%}
+    .ui-btn--primary{background:var(--ui-primary);color:#fff;border-color:var(--ui-primary);box-shadow:0 1px 3px rgba(26,107,74,.28),inset 0 1px 0 rgba(255,255,255,.08)}
+    .ui-btn--primary:hover:not(:disabled){background:var(--ui-primary-dark);border-color:var(--ui-primary-dark);box-shadow:0 4px 14px rgba(26,107,74,.35)}
+    .ui-btn--secondary{background:var(--ui-white);color:var(--ui-primary);border-color:var(--ui-primary)}
+    .ui-btn--secondary:hover:not(:disabled){background:var(--ui-primary-light)}
+    .ui-btn--ghost{background:transparent;color:var(--ui-text-2);border-color:var(--ui-border)}
+    .ui-btn--ghost:hover:not(:disabled){background:var(--ui-surface-alt);border-color:var(--ui-border-mid);color:var(--ui-text-1)}
+    .ui-btn--danger{background:var(--ui-error);color:#fff;border-color:var(--ui-error)}
+    .ui-btn--danger:hover:not(:disabled){background:#a8211a;border-color:#a8211a}
+
+    /* alert */
+    .ui-alert{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-radius:var(--r-md);border:1px solid transparent;font-size:13.5px;line-height:1.45;animation:uiAlertIn 200ms ease;position:relative}
+    @keyframes uiAlertIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+    .ui-alert__icon{flex-shrink:0;display:flex;align-items:center;margin-top:1px}
+    .ui-alert__body{flex:1;display:flex;flex-direction:column;gap:2px}
+    .ui-alert__title{font-weight:700;font-size:13px}
+    .ui-alert__msg{font-weight:400;opacity:.9}
+    .ui-alert__x{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:22px;height:22px;background:none;border:none;cursor:pointer;border-radius:var(--r-sm);color:inherit;opacity:.6;transition:opacity var(--t-fast),background var(--t-fast);padding:0}
+    .ui-alert__x:hover{opacity:1;background:rgba(0,0,0,.09)}
+    .ui-alert--dismissible{padding-right:38px}
+    .ui-alert--dismissible .ui-alert__x{position:absolute;right:8px;top:9px}
+    .ui-alert--error  {background:var(--ui-error-bg);  border-color:var(--ui-error-border);  color:var(--ui-error)}
+    .ui-alert--warning{background:var(--ui-warning-bg);border-color:var(--ui-warning-border);color:var(--ui-warning)}
+    .ui-alert--success{background:var(--ui-success-bg);border-color:var(--ui-success-border);color:var(--ui-success)}
+    .ui-alert--info   {background:var(--ui-info-bg);   border-color:var(--ui-info-border);   color:var(--ui-info)}
+    .ui-alert[hidden],.ui-alert.hidden{display:none}
+    .ui-alert.dismissing{animation:uiAlertOut 180ms ease forwards}
+    @keyframes uiAlertOut{to{opacity:0;transform:translateY(-3px);max-height:0;padding:0;margin:0;overflow:hidden}}
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Sidebar ── -->
+  <nav class="sidebar" aria-label="Registry navigation">
+    <div class="sb-brand">
+      <div class="sb-logo">UI</div>
+      <div>
+        <div class="sb-name">UI Registry</div>
+        <div class="sb-ver">v1.0.0</div>
+      </div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-grp">
+        <span class="sb-grp-lbl">Overview</span>
+        <a class="sb-link active" href="#overview">Introduction</a>
+      </div>
+      <div class="sb-grp">
+        <span class="sb-grp-lbl">Components</span>
+        <a class="sb-link" href="#textbox">Text Box <span class="sb-badge">Input</span></a>
+        <a class="sb-link" href="#password">Password <span class="sb-badge">Input</span></a>
+        <a class="sb-link" href="#multiselect">Multiselect <span class="sb-badge">Input</span></a>
+        <a class="sb-link" href="#button">Button <span class="sb-badge">Action</span></a>
+        <a class="sb-link" href="#alert">Alert <span class="sb-badge">Feedback</span></a>
+      </div>
+      <div class="sb-grp">
+        <span class="sb-grp-lbl">Projects</span>
+        <a class="sb-link" href="#projects">Common Events</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Content ── -->
+  <main class="content" id="overview">
+
+    <div class="page-hd">
+      <p class="page-eyebrow">UI Registry · v1.0.0</p>
+      <h1 class="page-title">Component Library</h1>
+      <p class="page-desc">A reusable collection of interface components and page templates. Plain HTML, CSS &amp; JavaScript — zero frameworks, zero build tools, zero external dependencies. Drop any component into any project.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat"><div class="stat__val">5</div><div class="stat__lbl">Components</div></div>
+      <div class="stat"><div class="stat__val">1</div><div class="stat__lbl">Projects</div></div>
+      <div class="stat"><div class="stat__val">100%</div><div class="stat__lbl">Vanilla JS</div></div>
+      <div class="stat"><div class="stat__val">A11y</div><div class="stat__lbl">Accessible</div></div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         TEXT BOX
+    ══════════════════════════════════════════ -->
+    <section class="section" id="textbox">
+      <div class="section-hd">
+        <h2 class="section-title">Text Box</h2>
+        <span class="section-tag">Input</span>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-card__lbl">Default</div>
+        <div class="demo-card__body">
+          <div class="ui-field" data-field>
+            <label class="ui-field__label" for="demo-txt-1">
+              Full Name <span class="ui-field__req" aria-hidden="true">*</span>
+            </label>
+            <div class="ui-field__ctrl">
+              <input class="ui-field__input" type="text" id="demo-txt-1" placeholder="Enter your full name" />
+            </div>
+            <span class="ui-field__hint">As it appears on official documents</span>
+            <span class="ui-field__err" role="alert" aria-live="polite"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-card__lbl">Error State</div>
+        <div class="demo-card__body">
+          <div class="ui-field ui-field--error" data-field>
+            <label class="ui-field__label" for="demo-txt-2">
+              Email Address <span class="ui-field__req" aria-hidden="true">*</span>
+            </label>
+            <div class="ui-field__ctrl">
+              <input class="ui-field__input" type="email" id="demo-txt-2" value="not-valid" aria-invalid="true" />
+            </div>
+            <span class="ui-field__err" role="alert">Please enter a valid email address.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-card__lbl">Disabled</div>
+        <div class="demo-card__body">
+          <div class="ui-field" data-field>
+            <label class="ui-field__label" for="demo-txt-3">Organisation</label>
+            <div class="ui-field__ctrl">
+              <input class="ui-field__input" type="text" id="demo-txt-3" value="Acme Corp" disabled />
+            </div>
+            <span class="ui-field__err" role="alert" aria-live="polite"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         PASSWORD
+    ══════════════════════════════════════════ -->
+    <section class="section" id="password">
+      <div class="section-hd">
+        <h2 class="section-title">Password Input</h2>
+        <span class="section-tag">Input</span>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-card__lbl">With Show / Hide Toggle</div>
+        <div class="demo-card__body">
+          <div class="ui-field ui-field--pw" data-field data-pw-field>
+            <label class="ui-field__label" for="demo-pw-1">
+              Password <span class="ui-field__req" aria-hidden="true">*</span>
+            </label>
+            <div class="ui-field__ctrl">
+              <input class="ui-field__input" type="password" id="demo-pw-1" placeholder="Enter your password" />
+              <button type="button" class="ui-pw-btn" aria-label="Show password" data-pw-toggle>
+                <svg class="ui-pw-icon ui-pw-icon--on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="ui-pw-icon ui-pw-icon--off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+              </button>
+            </div>
+            <span class="ui-field__err" role="alert" aria-live="polite"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-card__lbl">Error State</div>
+        <div class="demo-card__body">
+          <div class="ui-field ui-field--pw ui-field--error" data-field data-pw-field>
+            <label class="ui-field__label" for="demo-pw-2">
+              Password <span class="ui-field__req" aria-hidden="true">*</span>
+            </label>
+            <div class="ui-field__ctrl">
+              <input class="ui-field__input" type="password" id="demo-pw-2" placeholder="Enter your password" aria-invalid="true" />
+              <button type="button" class="ui-pw-btn" aria-label="Show password" data-pw-toggle>
+                <svg class="ui-pw-icon ui-pw-icon--on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="ui-pw-icon ui-pw-icon--off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+              </button>
+            </div>
+            <span class="ui-field__err" role="alert">Password is required.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         MULTISELECT
+    ══════════════════════════════════════════ -->
+    <section class="section" id="multiselect">
+      <div class="section-hd">
+        <h2 class="section-title">Multiselect Dropdown</h2>
+        <span class="section-tag">Input</span>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-card__lbl">Searchable, with tag chips &amp; keyboard navigation</div>
+        <div class="demo-card__body">
+          <div class="ui-field ui-field--ms" data-field data-ms-field>
+            <label class="ui-field__label" id="demo-ms-lbl">
+              Categories <span class="ui-field__req" aria-hidden="true">*</span>
+            </label>
+            <div class="ui-ms-trigger" role="combobox" tabindex="0"
+                 aria-haspopup="listbox" aria-expanded="false"
+                 aria-labelledby="demo-ms-lbl" aria-controls="demo-ms-lb" data-ms-trigger>
+              <span class="ui-ms-ph" data-ms-ph>Select categories…</span>
+              <span class="ui-ms-tags" data-ms-tags></span>
+              <span class="ui-ms-chev" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </div>
+            <div class="ui-ms-panel" role="listbox" id="demo-ms-lb"
+                 aria-multiselectable="true" aria-labelledby="demo-ms-lbl" data-ms-panel>
+              <div class="ui-ms-srch-wrap">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input class="ui-ms-srch" type="text" placeholder="Search…" aria-label="Search categories" data-ms-srch />
+              </div>
+              <ul class="ui-ms-list" data-ms-list>
+                <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="design"><span class="ui-ms-chk" aria-hidden="true"></span><span class="ui-ms-lbl">Design</span></li>
+                <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="development"><span class="ui-ms-chk" aria-hidden="true"></span><span class="ui-ms-lbl">Development</span></li>
+                <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="marketing"><span class="ui-ms-chk" aria-hidden="true"></span><span class="ui-ms-lbl">Marketing</span></li>
+                <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="operations"><span class="ui-ms-chk" aria-hidden="true"></span><span class="ui-ms-lbl">Operations</span></li>
+                <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="finance"><span class="ui-ms-chk" aria-hidden="true"></span><span class="ui-ms-lbl">Finance</span></li>
+                <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="hr"><span class="ui-ms-chk" aria-hidden="true"></span><span class="ui-ms-lbl">Human Resources</span></li>
+              </ul>
+              <div class="ui-ms-empty" data-ms-empty hidden>No options match your search.</div>
+              <div class="ui-ms-footer">
+                <button type="button" class="ui-ms-clear" data-ms-clear>Clear all</button>
+                <span class="ui-ms-count" data-ms-count></span>
+              </div>
+            </div>
+            <span class="ui-field__err" role="alert" aria-live="polite"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         BUTTON
+    ══════════════════════════════════════════ -->
+    <section class="section" id="button">
+      <div class="section-hd">
+        <h2 class="section-title">Button</h2>
+        <span class="section-tag">Action</span>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-card__lbl">Variants</div>
+        <div class="demo-card__body">
+          <div class="btn-row">
+            <button class="ui-btn ui-btn--primary"><span class="ui-btn__lbl">Primary</span><span class="ui-btn__spin" aria-hidden="true"></span></button>
+            <button class="ui-btn ui-btn--secondary"><span class="ui-btn__lbl">Secondary</span><span class="ui-btn__spin" aria-hidden="true"></span></button>
+            <button class="ui-btn ui-btn--ghost"><span class="ui-btn__lbl">Ghost</span><span class="ui-btn__spin" aria-hidden="true"></span></button>
+            <button class="ui-btn ui-btn--danger"><span class="ui-btn__lbl">Danger</span><span class="ui-btn__spin" aria-hidden="true"></span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-card__lbl">Sizes</div>
+        <div class="demo-card__body">
+          <div class="btn-row">
+            <button class="ui-btn ui-btn--primary"><span class="ui-btn__lbl">Default (44px)</span><span class="ui-btn__spin" aria-hidden="true"></span></button>
+            <button class="ui-btn ui-btn--primary ui-btn--sm"><span class="ui-btn__lbl">Small (36px)</span><span class="ui-btn__spin" aria-hidden="true"></span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-card__lbl">States</div>
+        <div class="demo-card__body">
+          <div class="btn-row">
+            <button class="ui-btn ui-btn--primary ui-btn--loading" aria-busy="true"><span class="ui-btn__lbl">Loading…</span><span class="ui-btn__spin" aria-hidden="true"></span></button>
+            <button class="ui-btn ui-btn--primary" disabled><span class="ui-btn__lbl">Disabled</span><span class="ui-btn__spin" aria-hidden="true"></span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-card__lbl">Interactive — click to toggle loading state</div>
+        <div class="demo-card__body">
+          <button class="ui-btn ui-btn--primary" id="demoLoadingBtn">
+            <span class="ui-btn__lbl">Test Loading State</span>
+            <span class="ui-btn__spin" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         ALERT
+    ══════════════════════════════════════════ -->
+    <section class="section" id="alert">
+      <div class="section-hd">
+        <h2 class="section-title">Alert</h2>
+        <span class="section-tag">Feedback</span>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-card__lbl">All variants — click × to dismiss</div>
+        <div class="demo-card__body demo-card__body--col">
+          <div class="alert-stack">
+
+            <div class="ui-alert ui-alert--error ui-alert--dismissible" role="alert" aria-live="assertive" data-alert>
+              <span class="ui-alert__icon" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+              <div class="ui-alert__body"><span class="ui-alert__title">Error</span><span class="ui-alert__msg">Something went wrong. Please try again.</span></div>
+              <button class="ui-alert__x" aria-label="Dismiss" data-alert-close><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+
+            <div class="ui-alert ui-alert--warning ui-alert--dismissible" role="alert" data-alert>
+              <span class="ui-alert__icon" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+              <div class="ui-alert__body"><span class="ui-alert__title">Warning</span><span class="ui-alert__msg">Your session expires in 5 minutes.</span></div>
+              <button class="ui-alert__x" aria-label="Dismiss" data-alert-close><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+
+            <div class="ui-alert ui-alert--success ui-alert--dismissible" role="status" data-alert>
+              <span class="ui-alert__icon" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
+              <div class="ui-alert__body"><span class="ui-alert__title">Success</span><span class="ui-alert__msg">Your changes have been saved.</span></div>
+              <button class="ui-alert__x" aria-label="Dismiss" data-alert-close><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+
+            <div class="ui-alert ui-alert--info" role="status" data-alert>
+              <span class="ui-alert__icon" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+              <div class="ui-alert__body"><span class="ui-alert__msg">This is an informational message with no dismiss button.</span></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" id="projects" />
+
+    <!-- ══════════════════════════════════════════
+         PROJECTS
+    ══════════════════════════════════════════ -->
+    <section class="section">
+      <div class="section-hd">
+        <h2 class="section-title">Projects</h2>
+        <span class="section-tag">Pages</span>
+      </div>
+      <p style="font-size:14px;color:var(--ui-text-3);margin-bottom:20px;max-width:520px">
+        Each project lives under <code style="font-size:12px;background:var(--ui-surface-alt);border:1px solid var(--ui-border);padding:2px 6px;border-radius:4px">projects/&lt;project-name&gt;/</code>
+        and uses the shared component library above. Pages are self-contained HTML files.
+      </p>
+
+      <a href="projects/common-events/pages/login/login.html" class="tpl-card" target="_blank" rel="noopener">
+        <div class="tpl-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+            <polyline points="10 17 15 12 10 7"/>
+            <line x1="15" x2="3" y1="12" y2="12"/>
+          </svg>
+        </div>
+        <div>
+          <div class="tpl-name">Common Events — Login Page</div>
+          <div class="tpl-meta">Username · Password · Event Type multiselect · Form validation · Alert banners</div>
+        </div>
+        <svg class="tpl-arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </a>
+    </section>
+
+  </main>
+</div>
+
+<script>
+/* ── UITextbox ── */
+const UITextbox=(()=>{'use strict';const q=(el,s)=>el.querySelector(s);function setError(f,m){f.classList.add('ui-field--error');f.classList.remove('ui-field--success');const e=q(f,'.ui-field__err');if(e)e.textContent=m;const i=q(f,'.ui-field__input');if(i)i.setAttribute('aria-invalid','true')}function clearError(f){f.classList.remove('ui-field--error');const e=q(f,'.ui-field__err');if(e)e.textContent='';const i=q(f,'.ui-field__input');if(i)i.removeAttribute('aria-invalid')}function getValue(f){const i=q(f,'.ui-field__input');return i?i.value.trim():''}function validate(f,opts={}){const{required=false,minLength,maxLength,pattern,patternMsg='Invalid format',label}=opts;const lbl=label||(q(f,'.ui-field__label')?.textContent.replace('*','').trim())||'This field';const val=getValue(f);if(required&&!val){setError(f,`${lbl} is required.`);return false}if(val&&minLength&&val.length<minLength){setError(f,`${lbl} must be at least ${minLength} characters.`);return false}if(val&&maxLength&&val.length>maxLength){setError(f,`${lbl} must not exceed ${maxLength} characters.`);return false}if(val&&pattern&&!new RegExp(pattern).test(val)){setError(f,patternMsg);return false}clearError(f);return true}function init(f){const input=q(f,'.ui-field__input');if(!input||input.dataset.uiInit)return;input.addEventListener('input',()=>{if(f.classList.contains('ui-field--error'))clearError(f)});input.dataset.uiInit='1'}function initAll(scope=document){scope.querySelectorAll('.ui-field[data-field]').forEach(init)}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',()=>initAll()):initAll();return{init,initAll,setError,clearError,getValue,validate}})();
+
+/* ── UIPassword ── */
+const UIPassword=(()=>{'use strict';const inp=f=>f.querySelector('.ui-field__input');const btn=f=>f.querySelector('[data-pw-toggle]');function show(f){const i=inp(f),b=btn(f);if(i)i.type='text';f.dataset.vis='1';if(b)b.setAttribute('aria-label','Hide password')}function hide(f){const i=inp(f),b=btn(f);if(i)i.type='password';f.dataset.vis='0';if(b)b.setAttribute('aria-label','Show password')}function init(f){if(f.dataset.uiPwInit)return;if(typeof UITextbox!=='undefined')UITextbox.init(f);const b=btn(f);if(b)b.addEventListener('click',e=>{e.preventDefault();f.dataset.vis==='1'?hide(f):show(f);inp(f)?.focus()});f.dataset.uiPwInit='1'}function initAll(scope=document){scope.querySelectorAll('[data-pw-field]').forEach(init)}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',()=>initAll()):initAll();return{init,initAll,show,hide}})();
+
+/* ── UIMultiselect ── */
+const UIMultiselect=(()=>{'use strict';const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');const $=(el,s)=>el.querySelector(s);const $$=(el,s)=>[...el.querySelectorAll(s)];const getTrigger=f=>$(f,'[data-ms-trigger]');const getPanel=f=>$(f,'[data-ms-panel]');const getSearch=f=>$(f,'[data-ms-srch]');const getTags=f=>$(f,'[data-ms-tags]');const getPH=f=>$(f,'[data-ms-ph]');const getCount=f=>$(f,'[data-ms-count]');const getEmpty=f=>$(f,'[data-ms-empty]');const getOpts=f=>$$(f,'[data-ms-opt]');const isOpen=f=>getTrigger(f)?.getAttribute('aria-expanded')==='true';const isSel=o=>o.getAttribute('aria-selected')==='true';function open(f){getTrigger(f)?.setAttribute('aria-expanded','true');getPanel(f)?.classList.add('open');const s=getSearch(f);if(s){s.value='';filter(f,'');s.focus()}}function close(f){getTrigger(f)?.setAttribute('aria-expanded','false');getPanel(f)?.classList.remove('open');$$(f,'.focused').forEach(o=>o.classList.remove('focused'))}function renderTags(f){const tagsEl=getTags(f),ph=getPH(f),cnt=getCount(f);if(!tagsEl)return;const sel=getOpts(f).filter(isSel);tagsEl.innerHTML='';sel.forEach(o=>{const val=o.dataset.msVal;const label=($(o,'.ui-ms-lbl')?.textContent||'').trim();const t=document.createElement('span');t.className='ui-tag';t.innerHTML=`<span>${esc(label)}</span><button type="button" class="ui-tag__x" aria-label="Remove ${esc(label)}" data-rm="${esc(val)}">&#215;</button>`;tagsEl.appendChild(t)});tagsEl.querySelectorAll('[data-rm]').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const o=f.querySelector(`[data-ms-opt][data-ms-val="${b.dataset.rm}"]`);if(o)o.setAttribute('aria-selected','false');renderTags(f)})});if(ph)ph.classList.toggle('hidden',sel.length>0);if(cnt)cnt.textContent=sel.length?`${sel.length} selected`:''}function filter(f,q){const query=q.toLowerCase().trim();let vis=0;getOpts(f).forEach(o=>{const lbl=($(o,'.ui-ms-lbl')?.textContent||'').toLowerCase();const match=!query||lbl.includes(query);o.classList.toggle('filtered',!match);if(match)vis++});const emp=getEmpty(f);if(emp)emp.hidden=vis>0}function moveFocus(f,dir){const vis=getOpts(f).filter(o=>!o.classList.contains('filtered'));const cur=vis.findIndex(o=>o.classList.contains('focused'));vis.forEach(o=>o.classList.remove('focused'));let nx=cur+dir;if(nx<0)nx=vis.length-1;if(nx>=vis.length)nx=0;vis[nx]?.classList.add('focused');vis[nx]?.scrollIntoView({block:'nearest'})}function handleKey(e,f){if(!isOpen(f)){if(['Enter',' ','ArrowDown'].includes(e.key)){e.preventDefault();open(f)}return}switch(e.key){case'Escape':e.preventDefault();close(f);getTrigger(f)?.focus();break;case'ArrowDown':e.preventDefault();moveFocus(f,1);break;case'ArrowUp':e.preventDefault();moveFocus(f,-1);break;case'Enter':case' ':{const fc=$(f,'.focused');if(fc){e.preventDefault();fc.setAttribute('aria-selected',isSel(fc)?'false':'true');renderTags(f)}break}}}function init(f){if(f.dataset.uiMsInit)return;renderTags(f);const trigger=getTrigger(f),search=getSearch(f);trigger?.addEventListener('click',()=>isOpen(f)?close(f):open(f));trigger?.addEventListener('keydown',e=>handleKey(e,f));getOpts(f).forEach(o=>{o.addEventListener('click',()=>{o.setAttribute('aria-selected',isSel(o)?'false':'true');renderTags(f);search?.focus()})});search?.addEventListener('input',e=>{filter(f,e.target.value);$$(f,'.focused').forEach(o=>o.classList.remove('focused'))});search?.addEventListener('keydown',e=>handleKey(e,f));$(f,'[data-ms-clear]')?.addEventListener('click',()=>{getOpts(f).forEach(o=>o.setAttribute('aria-selected','false'));renderTags(f)});document.addEventListener('click',e=>{if(!f.contains(e.target))close(f)});f.dataset.uiMsInit='1'}function initAll(scope=document){scope.querySelectorAll('[data-ms-field]').forEach(init)}document.readyState==='loading'?document.addEventListener('DOMContentLoaded',()=>initAll()):initAll();return{init,initAll,getValues:f=>getOpts(f).filter(isSel).map(o=>o.dataset.msVal)}})();
+
+/* ── UIButton ── */
+const UIButton=(()=>{'use strict';function setLoading(btn,on){if(!btn)return;btn.classList.toggle('ui-btn--loading',on);on?btn.setAttribute('aria-busy','true'):btn.removeAttribute('aria-busy')}function setDisabled(btn,on){if(!btn)return;btn.disabled=on}return{setLoading,setDisabled}})();
+
+/* ── Alert dismiss ── */
+document.querySelectorAll('[data-alert-close]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const a=b.closest('[data-alert]');
+    if(!a)return;
+    a.classList.add('dismissing');
+    const done=()=>{a.hidden=true;a.classList.remove('dismissing');a.removeEventListener('animationend',done)};
+    a.addEventListener('animationend',done);
+  });
+});
+
+/* ── Interactive loading demo ── */
+document.getElementById('demoLoadingBtn')?.addEventListener('click', function() {
+  UIButton.setLoading(this, true);
+  setTimeout(() => UIButton.setLoading(this, false), 2000);
+});
+
+/* ── Sidebar nav active state ── */
+document.querySelectorAll('.sb-link[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
+    const target = document.getElementById(link.getAttribute('href').slice(1));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

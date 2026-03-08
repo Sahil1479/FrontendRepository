@@ -1,0 +1,224 @@
+/* ================================================================
+   COMPONENT: Multiselect Dropdown
+   FILE: components/multiselect-dropdown/multiselect-dropdown.css
+   Requires: textbox.css
+   ================================================================ */
+
+/* Field wrapper needs relative positioning for the panel */
+.ui-field--ms { position: relative; }
+
+/* ---- Trigger (styled like an input) ---- */
+.ui-ms-trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-height: 44px;
+  padding: 6px 42px 6px 14px;
+  background: var(--ui-surface);
+  border: 1.5px solid var(--ui-border);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  transition: border-color var(--t-base), box-shadow var(--t-base);
+}
+.ui-ms-trigger:hover { border-color: var(--ui-border-mid); }
+.ui-ms-trigger:focus,
+.ui-ms-trigger[aria-expanded="true"] {
+  border-color: var(--ui-border-focus);
+  box-shadow: var(--sh-focus);
+  background: var(--ui-white);
+}
+
+/* Error state applied to trigger */
+.ui-field--error .ui-ms-trigger {
+  border-color: var(--ui-error);
+  background: var(--ui-error-bg);
+}
+.ui-field--error .ui-ms-trigger:focus {
+  box-shadow: 0 0 0 3px var(--ui-error-glow);
+}
+
+/* ---- Placeholder ---- */
+.ui-ms-ph { font-size: 14px; color: var(--ui-text-4); pointer-events: none; }
+.ui-ms-ph.hidden { display: none; }
+
+/* ---- Tags container ---- */
+.ui-ms-tags { display: flex; flex-wrap: wrap; gap: 4px; flex: 1; }
+
+/* ---- Tag chip ---- */
+.ui-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 23px;
+  padding: 0 3px 0 9px;
+  background: var(--ui-primary-light);
+  color: var(--ui-primary-dark);
+  border: 1px solid rgba(26, 107, 74, 0.22);
+  border-radius: var(--r-full);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  animation: tagIn 150ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes tagIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.ui-tag__x {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px; height: 16px;
+  border: none; background: none;
+  color: inherit; cursor: pointer;
+  border-radius: 50%;
+  font-size: 14px; line-height: 1; padding: 0;
+  opacity: 0.7;
+  transition: opacity var(--t-fast), background var(--t-fast);
+}
+.ui-tag__x:hover { opacity: 1; background: rgba(26, 107, 74, 0.2); }
+
+/* ---- Chevron ---- */
+.ui-ms-chev {
+  position: absolute;
+  right: 13px; top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  color: var(--ui-text-3);
+  pointer-events: none;
+  transition: transform var(--t-base), color var(--t-base);
+}
+.ui-ms-trigger[aria-expanded="true"] .ui-ms-chev {
+  transform: translateY(-50%) rotate(180deg);
+  color: var(--ui-primary);
+}
+
+/* ---- Dropdown Panel ---- */
+.ui-ms-panel {
+  position: absolute;
+  z-index: var(--z-dropdown);
+  top: calc(100% + 5px);
+  left: 0; right: 0;
+  background: var(--ui-surface);
+  border: 1.5px solid var(--ui-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-lg);
+  overflow: hidden;
+  display: none;
+  flex-direction: column;
+}
+.ui-ms-panel.open {
+  display: flex;
+  animation: panelIn 150ms ease;
+}
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Search ---- */
+.ui-ms-srch-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--ui-border);
+  background: var(--ui-surface-alt);
+}
+.ui-ms-srch-wrap svg { color: var(--ui-text-3); flex-shrink: 0; }
+
+.ui-ms-srch {
+  flex: 1; border: none; outline: none;
+  font-family: var(--ui-font);
+  font-size: 13px;
+  color: var(--ui-text-1);
+  background: transparent;
+}
+.ui-ms-srch::placeholder { color: var(--ui-text-4); }
+
+/* ---- Options list ---- */
+.ui-ms-list {
+  list-style: none;
+  max-height: 210px;
+  overflow-y: auto;
+  padding: 5px 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ui-border) transparent;
+}
+.ui-ms-list::-webkit-scrollbar { width: 4px; }
+.ui-ms-list::-webkit-scrollbar-thumb { background: var(--ui-border); border-radius: 99px; }
+
+/* ---- Option row ---- */
+.ui-ms-opt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  cursor: pointer;
+  font-size: 13.5px;
+  color: var(--ui-text-1);
+  transition: background var(--t-fast);
+}
+.ui-ms-opt:hover                    { background: var(--ui-surface-alt); }
+.ui-ms-opt[aria-selected="true"]    { background: var(--ui-primary-light); color: var(--ui-primary-dark); }
+.ui-ms-opt.focused                  { background: var(--ui-surface-alt); }
+.ui-ms-opt.filtered                 { display: none; }
+
+/* Custom checkbox */
+.ui-ms-chk {
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--ui-border-mid);
+  border-radius: 4px;
+  background: var(--ui-white);
+  flex-shrink: 0;
+  position: relative;
+  transition: border-color var(--t-fast), background var(--t-fast);
+}
+.ui-ms-opt[aria-selected="true"] .ui-ms-chk {
+  background: var(--ui-primary);
+  border-color: var(--ui-primary);
+}
+.ui-ms-opt[aria-selected="true"] .ui-ms-chk::after {
+  content: '';
+  position: absolute;
+  left: 4px; top: 1px;
+  width: 5px; height: 9px;
+  border: 2px solid #fff;
+  border-top: none; border-left: none;
+  transform: rotate(45deg);
+}
+
+/* ---- Empty state ---- */
+.ui-ms-empty {
+  padding: 16px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ui-text-3);
+}
+
+/* ---- Footer ---- */
+.ui-ms-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border-top: 1px solid var(--ui-border);
+  background: var(--ui-surface-alt);
+}
+.ui-ms-clear {
+  font-family: var(--ui-font);
+  font-size: 12px; font-weight: 600;
+  color: var(--ui-primary);
+  background: none; border: none;
+  cursor: pointer; padding: 2px 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.ui-ms-clear:hover { color: var(--ui-primary-dark); }
+
+.ui-ms-count { font-size: 12px; color: var(--ui-text-3); }

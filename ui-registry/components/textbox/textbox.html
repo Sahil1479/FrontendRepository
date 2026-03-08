@@ -1,0 +1,39 @@
+<!--
+  COMPONENT: Text Box Input
+  FILE: components/textbox/textbox.html
+  ─────────────────────────────────────────
+  Dependencies: textbox.css  ·  textbox.js
+
+  VARIANTS (modifier on .ui-field):
+    Default   — .ui-field
+    Error     — .ui-field  .ui-field--error
+    Success   — .ui-field  .ui-field--success
+    Disabled  — add [disabled] to <input>
+
+  JS API:
+    UITextbox.validate(fieldEl, { required, minLength, maxLength, pattern, patternMsg, label })
+    UITextbox.setError(fieldEl, 'message')
+    UITextbox.clearError(fieldEl)
+    UITextbox.getValue(fieldEl)   → trimmed string
+-->
+
+<div class="ui-field" data-field>
+  <label class="ui-field__label" for="field-username">
+    Username <span class="ui-field__req" aria-hidden="true">*</span>
+  </label>
+  <div class="ui-field__ctrl">
+    <input
+      class="ui-field__input"
+      type="text"
+      id="field-username"
+      name="username"
+      placeholder="Enter your username"
+      autocomplete="username"
+      spellcheck="false"
+      aria-required="true"
+      aria-describedby="field-username-err"
+    />
+  </div>
+  <span class="ui-field__hint">Your registered username or email</span>
+  <span class="ui-field__err" id="field-username-err" role="alert" aria-live="polite"></span>
+</div>

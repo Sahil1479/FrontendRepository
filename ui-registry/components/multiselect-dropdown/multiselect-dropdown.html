@@ -1,0 +1,81 @@
+<!--
+  COMPONENT: Multiselect Dropdown
+  FILE: components/multiselect-dropdown/multiselect-dropdown.html
+  ─────────────────────────────────────────
+  Dependencies: textbox.css · multiselect-dropdown.css · multiselect-dropdown.js
+
+  Options: add <li class="ui-ms-opt" role="option" aria-selected="false"
+                   data-ms-opt data-ms-val="value">
+             <span class="ui-ms-chk" aria-hidden="true"></span>
+             <span class="ui-ms-lbl">Label</span>
+           </li>
+
+  Pre-select an option by setting aria-selected="true".
+
+  JS API:
+    UIMultiselect.getValues(fieldEl)           → string[]
+    UIMultiselect.validate(fieldEl, { required })
+    UIMultiselect.setError(fieldEl, msg)
+    UIMultiselect.clearError(fieldEl)
+-->
+
+<div class="ui-field ui-field--ms" data-field data-ms-field>
+  <label class="ui-field__label" id="ms-label">
+    Select Options <span class="ui-field__req" aria-hidden="true">*</span>
+  </label>
+
+  <div class="ui-ms-trigger" role="combobox" tabindex="0"
+       aria-haspopup="listbox" aria-expanded="false"
+       aria-labelledby="ms-label" aria-controls="ms-listbox"
+       aria-required="true" data-ms-trigger>
+    <span class="ui-ms-ph" data-ms-ph>Select options…</span>
+    <span class="ui-ms-tags" data-ms-tags></span>
+    <span class="ui-ms-chev" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </span>
+  </div>
+
+  <div class="ui-ms-panel" role="listbox" id="ms-listbox"
+       aria-multiselectable="true" aria-labelledby="ms-label" data-ms-panel>
+
+    <div class="ui-ms-srch-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.5"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input class="ui-ms-srch" type="text"
+             placeholder="Search options…"
+             aria-label="Search options"
+             data-ms-srch />
+    </div>
+
+    <ul class="ui-ms-list" data-ms-list>
+      <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="option-1">
+        <span class="ui-ms-chk" aria-hidden="true"></span>
+        <span class="ui-ms-lbl">Option 1</span>
+      </li>
+      <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="option-2">
+        <span class="ui-ms-chk" aria-hidden="true"></span>
+        <span class="ui-ms-lbl">Option 2</span>
+      </li>
+      <li class="ui-ms-opt" role="option" aria-selected="false" data-ms-opt data-ms-val="option-3">
+        <span class="ui-ms-chk" aria-hidden="true"></span>
+        <span class="ui-ms-lbl">Option 3</span>
+      </li>
+    </ul>
+
+    <div class="ui-ms-empty" data-ms-empty hidden>No options match your search.</div>
+
+    <div class="ui-ms-footer">
+      <button type="button" class="ui-ms-clear" data-ms-clear>Clear all</button>
+      <span class="ui-ms-count" data-ms-count></span>
+    </div>
+  </div>
+
+  <span class="ui-field__err" id="ms-err" role="alert" aria-live="polite"></span>
+</div>
