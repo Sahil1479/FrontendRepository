@@ -4,11 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign In — Common Events</title>
+  <link rel="stylesheet" href="../../../../assets/theme.css" />
   <style>
     /* ----------------------------------------------------------------
        Theme variables and global styles (colors, typography, spacing, etc.)
        ---------------------------------------------------------------- */
-    :root {
+    /* :root {
       --ui-primary:        #1a6b4a;
       --ui-primary-dark:   #134f38;
       --ui-primary-mid:    #1d7a55;
@@ -48,7 +49,7 @@
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-    body{font-family:var(--ui-font);font-size:15px;color:var(--ui-text-1);background:var(--ui-bg);line-height:1.55}
+    body{font-family:var(--ui-font);font-size:15px;color:var(--ui-text-1);background:var(--ui-bg);line-height:1.55} */
 
     /* ----------------------------------------------------------------
        Login page layout (project-specific styles)
@@ -65,9 +66,6 @@
       position: relative;
       overflow: hidden;
       background: var(--ui-primary);
-      background-image:
-        radial-gradient(ellipse 80% 55% at 25% 35%, rgba(34,136,94,.55) 0%, transparent 65%),
-        radial-gradient(ellipse 55% 75% at 80% 80%, rgba(19,79,56,.8) 0%, transparent 60%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -401,6 +399,8 @@
         'You have been signed in successfully. Redirecting…',
         'Welcome back!');
       UIButton.setLoading(submitBtn, false);
+      // Simulate redirect after successful login to layout page.
+      setTimeout(() => location.href = '../../layout/base-layout.html', 2000);
     } catch (err) {
       UIButton.setLoading(submitBtn, false);
       UIAlert.showInContainer(alertsEl, 'error',

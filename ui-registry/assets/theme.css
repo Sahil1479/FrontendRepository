@@ -7,15 +7,15 @@
    ================================================================ */
 
 :root {
-  /* --- Primary brand colour --- */
-  --ui-primary:        #1a6b4a;
+  /* --- Primary brand colour (Default Green) --- */
+  /* --ui-primary:        #1a6b4a;
   --ui-primary-dark:   #134f38;
   --ui-primary-mid:    #1d7a55;
   --ui-primary-light:  #e8f5ef;
-  --ui-primary-glow:   rgba(26, 107, 74, 0.18);
+  --ui-primary-glow:   rgba(26, 107, 74, 0.18); */
 
   /* --- Neutrals --- */
-  --ui-white:          #ffffff;
+  /* --ui-white:          #ffffff;
   --ui-bg:             #f1f4f2;
   --ui-surface:        #ffffff;
   --ui-surface-alt:    #f7faf8;
@@ -26,7 +26,29 @@
   --ui-text-1:         #19251f;
   --ui-text-2:         #385048;
   --ui-text-3:         #66877a;
-  --ui-text-4:         #9ab5aa;
+  --ui-text-4:         #9ab5aa; */
+
+  /* Violet Theme */
+  /* --- Primary brand colour --- */
+  --ui-primary:        #6d28d9;
+  --ui-primary-dark:   #5b21b6;
+  --ui-primary-mid:    #7c3aed;
+  --ui-primary-light:  #ede9fe;
+  --ui-primary-glow:   rgba(109, 40, 217, 0.18);
+
+  /* --- Neutrals --- */
+  --ui-white:          #ffffff;
+  --ui-bg:             #f5f3ff;
+  --ui-surface:        #ffffff;
+  --ui-surface-alt:    #faf7ff;
+  --ui-border:         #ddd6fe;
+  --ui-border-mid:     #c4b5fd;
+  --ui-border-focus:   #6d28d9;
+
+  --ui-text-1:         #1e1333;
+  --ui-text-2:         #3b2a6e;
+  --ui-text-3:         #6d5a9e;
+  --ui-text-4:         #a897d4;
 
   /* --- Semantic colours --- */
   --ui-error:          #c0281d;
@@ -79,6 +101,12 @@
   --z-dropdown: 100;
   --z-modal:    300;
   --z-toast:    400;
+
+  /* Layout */
+    --nav-h:     60px;
+    --nav-max-w: 1280px;
+    --footer-max-w: 1280px;
+    --page-max-w: 1280px;
 }
 
 /* ---- Base Reset ---- */
@@ -97,7 +125,12 @@ body {
   color: var(--ui-text-1);
   background: var(--ui-bg);
   line-height: 1.55;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
+
+a { color: inherit; }
 
 .sr-only {
   position: absolute; width: 1px; height: 1px;

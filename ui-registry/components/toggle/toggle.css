@@ -1,0 +1,74 @@
+/* ================================================================
+   COMPONENT: Toggle Switch
+   FILE: components/toggle/toggle.css
+   ================================================================ */
+
+.ui-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ui-toggle__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.ui-toggle__track {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: var(--ui-border-mid);
+  border-radius: var(--r-full);
+  transition: background var(--t-base);
+  flex-shrink: 0;
+}
+
+.ui-toggle__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,.18);
+  transition: transform var(--t-bounce), box-shadow var(--t-base);
+}
+
+.ui-toggle__input:checked ~ .ui-toggle__track {
+  background: var(--ui-primary);
+}
+.ui-toggle__input:checked ~ .ui-toggle__track .ui-toggle__thumb {
+  transform: translateX(20px);
+}
+.ui-toggle__input:focus-visible ~ .ui-toggle__track {
+  box-shadow: var(--sh-focus);
+}
+.ui-toggle__input:disabled ~ .ui-toggle__track {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ui-toggle__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ui-text-2);
+  line-height: 1;
+}
+
+/* Wrapped in a field-style box (matches input height/border) */
+.ui-toggle-field {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 14px;
+  background: var(--ui-surface);
+  border: 1.5px solid var(--ui-border);
+  border-radius: var(--r-md);
+}

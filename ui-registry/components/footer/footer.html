@@ -1,0 +1,102 @@
+<!--
+  COMPONENT: Footer
+  FILE: components/footer/footer.html
+  ─────────────────────────────────────────
+  Dependencies: footer.css
+
+  FEATURES:
+    • Brand column with logo, description, social links
+    • 3 configurable link columns
+    • Bottom bar with copyright + legal links
+    • Fully responsive (2-col tablet, 1-col mobile)
+
+  CUSTOMISATION:
+    • Replace logo mark / name text
+    • Add/remove <li> items in each column
+    • Remove .ui-footer__social if not needed
+    • Set --footer-max-w CSS variable for width control
+-->
+
+<footer class="ui-footer" role="contentinfo">
+  <div class="ui-footer__inner">
+
+    <!-- ── Main grid ── -->
+    <div class="ui-footer__main">
+
+      <!-- Brand column -->
+      <div class="ui-footer__brand">
+        <a class="ui-footer__logo" href="index.html" aria-label="Home">
+          <span class="ui-footer__logo-mark" aria-hidden="true">UI</span>
+          <span class="ui-footer__logo-name">App Name</span>
+        </a>
+        <p class="ui-footer__brand-desc">
+          Short description of the application or organisation. Keep it concise.
+        </p>
+        <div class="ui-footer__social" aria-label="Social links">
+          <a class="ui-footer__social-btn" href="#" aria-label="Twitter / X" rel="noopener noreferrer" target="_blank">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4l16 16M4 20 20 4"/></svg>
+          </a>
+          <a class="ui-footer__social-btn" href="#" aria-label="LinkedIn" rel="noopener noreferrer" target="_blank">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a class="ui-footer__social-btn" href="#" aria-label="GitHub" rel="noopener noreferrer" target="_blank">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Link column 1 -->
+      <div class="ui-footer__col">
+        <h3 class="ui-footer__col-title">Product</h3>
+        <ul class="ui-footer__links">
+          <li><a class="ui-footer__link" href="#">Features</a></li>
+          <li><a class="ui-footer__link" href="#">Changelog</a></li>
+          <li><a class="ui-footer__link" href="#">Roadmap</a></li>
+          <li><a class="ui-footer__link" href="#">Pricing</a></li>
+        </ul>
+      </div>
+
+      <!-- Link column 2 -->
+      <div class="ui-footer__col">
+        <h3 class="ui-footer__col-title">Resources</h3>
+        <ul class="ui-footer__links">
+          <li><a class="ui-footer__link" href="#">Documentation</a></li>
+          <li><a class="ui-footer__link" href="#">API Reference</a></li>
+          <li><a class="ui-footer__link" href="#">Support</a></li>
+          <li><a class="ui-footer__link" href="#">Status</a></li>
+        </ul>
+      </div>
+
+      <!-- Link column 3 -->
+      <div class="ui-footer__col">
+        <h3 class="ui-footer__col-title">Company</h3>
+        <ul class="ui-footer__links">
+          <li><a class="ui-footer__link" href="#">About</a></li>
+          <li><a class="ui-footer__link" href="#">Blog</a></li>
+          <li><a class="ui-footer__link" href="#">Careers</a></li>
+          <li><a class="ui-footer__link" href="#">Contact</a></li>
+        </ul>
+      </div>
+
+    </div><!-- /.ui-footer__main -->
+
+    <!-- ── Bottom bar ── -->
+    <div class="ui-footer__bottom">
+      <p class="ui-footer__copy">
+        &copy; <span id="footer-year"></span> App Name. All rights reserved.
+      </p>
+      <nav class="ui-footer__bottom-links" aria-label="Legal">
+        <a class="ui-footer__bottom-link" href="#">Privacy Policy</a>
+        <a class="ui-footer__bottom-link" href="#">Terms of Service</a>
+        <a class="ui-footer__bottom-link" href="#">Cookie Policy</a>
+      </nav>
+    </div>
+
+  </div><!-- /.ui-footer__inner -->
+</footer>
+
+<script>
+  // Auto-fill the copyright year
+  const yr = document.getElementById('footer-year');
+  if (yr) yr.textContent = new Date().getFullYear();
+</script>

@@ -1,0 +1,203 @@
+<!--
+  COMPONENT: Navigation Bar
+  FILE: components/navbar/navbar.html
+  ─────────────────────────────────────────
+  Dependencies: navbar.css  ·  navbar.js
+
+  FEATURES:
+    • Logo with mark + text
+    • Direct nav links (single click)
+    • Dropdown nav links (with grouped options + descriptions)
+    • Profile button → user details + logout
+    • Mobile hamburger → full-screen drawer with accordion submenus
+    • Sticky positioning
+    • Auto active-state detection from URL
+
+  JS API:
+    UINavbar.init(navEl)
+    UINavbar.setActive(navEl, href)
+    UINavbar.setUser(navEl, { name, email, role, initials, avatarUrl })
+    UINavbar.onLogout(navEl, callback)
+
+  CUSTOMISATION:
+    • Replace logo mark / text / tagline
+    • Add/remove .ui-nav__item entries
+    • For dropdown: add data-nav-toggle + [data-nav-dropdown]
+    • For direct link: plain .ui-nav__link <a>
+    • Change --nav-h CSS variable to resize height (default 60px)
+-->
+
+<nav class="ui-nav" data-nav aria-label="Main navigation">
+  <div class="ui-nav__inner">
+
+    <!-- ── Logo ── -->
+    <a class="ui-nav__logo" href="index.html" aria-label="Home">
+      <span class="ui-nav__logo-mark" aria-hidden="true">UI</span>
+      <span class="ui-nav__logo-text">
+        <span class="ui-nav__logo-name">App Name</span>
+        <span class="ui-nav__logo-tagline">Your tagline here</span>
+      </span>
+    </a>
+
+    <!-- ── Desktop links ── -->
+    <ul class="ui-nav__links" role="list">
+
+      <!-- Direct link -->
+      <li class="ui-nav__item">
+        <a class="ui-nav__link" href="dashboard.html" data-page="dashboard.html">
+          Dashboard
+        </a>
+      </li>
+
+      <!-- Dropdown example -->
+      <li class="ui-nav__item">
+        <button class="ui-nav__link" data-nav-toggle
+                aria-haspopup="true" aria-expanded="false"
+                aria-controls="nav-drop-reports">
+          Reports
+          <svg class="ui-nav__chev" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="ui-nav__dropdown" id="nav-drop-reports" data-nav-dropdown role="menu">
+          <span class="ui-nav__drop-group">Analytics</span>
+          <a class="ui-nav__drop-item" href="summary.html" data-page="summary.html" role="menuitem">
+            <svg class="ui-nav__drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span class="ui-nav__drop-meta">
+              <span class="ui-nav__drop-label">Summary</span>
+              <span class="ui-nav__drop-desc">Overview and key metrics</span>
+            </span>
+          </a>
+          <a class="ui-nav__drop-item" href="detail.html" data-page="detail.html" role="menuitem">
+            <svg class="ui-nav__drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            <span class="ui-nav__drop-meta">
+              <span class="ui-nav__drop-label">Detailed View</span>
+              <span class="ui-nav__drop-desc">Line-by-line breakdown</span>
+            </span>
+          </a>
+          <div class="ui-nav__drop-div"></div>
+          <span class="ui-nav__drop-group">Export</span>
+          <a class="ui-nav__drop-item" href="export.html" data-page="export.html" role="menuitem">
+            <svg class="ui-nav__drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span class="ui-nav__drop-meta">
+              <span class="ui-nav__drop-label">Download Report</span>
+              <span class="ui-nav__drop-desc">CSV, PDF or Excel</span>
+            </span>
+          </a>
+        </div>
+      </li>
+
+      <!-- Another direct link -->
+      <li class="ui-nav__item">
+        <a class="ui-nav__link" href="settings.html" data-page="settings.html">
+          Settings
+        </a>
+      </li>
+
+    </ul>
+
+    <!-- ── Right: Actions ── -->
+    <div class="ui-nav__actions">
+
+      <!-- Profile button + dropdown -->
+      <div class="ui-nav__item">
+        <button class="ui-nav__profile-btn" data-nav-toggle
+                aria-haspopup="true" aria-expanded="false"
+                aria-controls="nav-profile-drop"
+                aria-label="User menu">
+          <span class="ui-nav__avatar" data-nav-initials aria-hidden="true">??</span>
+          <span class="ui-nav__profile-name" data-nav-username>User</span>
+          <svg class="ui-nav__profile-chev" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+
+        <div class="ui-nav__dropdown ui-nav__profile-drop"
+             id="nav-profile-drop" data-nav-dropdown role="menu">
+
+          <!-- User card -->
+          <div class="ui-nav__profile-card">
+            <div class="ui-nav__profile-card-name" data-nav-username>User Name</div>
+            <div class="ui-nav__profile-card-email" data-nav-email>user@example.com</div>
+            <span class="ui-nav__profile-card-role" data-nav-role></span>
+          </div>
+
+          <a class="ui-nav__drop-item" href="profile.html" role="menuitem">
+            <svg class="ui-nav__drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            My Profile
+          </a>
+          <a class="ui-nav__drop-item" href="account.html" role="menuitem">
+            <svg class="ui-nav__drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+            Account Settings
+          </a>
+
+          <div class="ui-nav__drop-div"></div>
+
+          <button class="ui-nav__drop-item ui-nav__drop-item--danger"
+                  data-nav-logout role="menuitem">
+            <svg class="ui-nav__drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign Out
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Mobile hamburger ── -->
+    <button class="ui-nav__hamburger" data-nav-hamburger
+            aria-label="Open navigation menu" aria-expanded="false"
+            aria-controls="nav-mobile-panel">
+      <span class="ui-nav__ham-lines" aria-hidden="true">
+        <span class="ui-nav__ham-line"></span>
+        <span class="ui-nav__ham-line"></span>
+        <span class="ui-nav__ham-line"></span>
+      </span>
+    </button>
+
+  </div><!-- /.ui-nav__inner -->
+</nav>
+
+<!-- ── Mobile drawer (placed immediately after <nav>) ── -->
+<div class="ui-nav__mobile-panel" id="nav-mobile-panel" data-nav-mobile
+     role="dialog" aria-label="Navigation menu" aria-modal="false">
+
+  <!-- Mobile profile section -->
+  <div class="ui-nav__mob-profile">
+    <div class="ui-nav__avatar" data-nav-initials aria-hidden="true">??</div>
+    <div class="ui-nav__mob-profile-info">
+      <div class="ui-nav__mob-profile-name" data-nav-username>User Name</div>
+      <div class="ui-nav__mob-profile-email" data-nav-email>user@example.com</div>
+    </div>
+  </div>
+
+  <div class="ui-nav__mob-divider"></div>
+
+  <!-- Direct link -->
+  <a class="ui-nav__mob-link" href="dashboard.html" data-page="dashboard.html">Dashboard</a>
+
+  <!-- Accordion dropdown -->
+  <div class="ui-nav__mob-item">
+    <button class="ui-nav__mob-link" data-mob-toggle aria-expanded="false">
+      Reports
+      <svg class="ui-nav__mob-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="ui-nav__mob-sub">
+      <a class="ui-nav__mob-sub-link" href="summary.html">Summary</a>
+      <a class="ui-nav__mob-sub-link" href="detail.html">Detailed View</a>
+      <a class="ui-nav__mob-sub-link" href="export.html">Download Report</a>
+    </div>
+  </div>
+
+  <a class="ui-nav__mob-link" href="settings.html" data-page="settings.html">Settings</a>
+
+  <div class="ui-nav__mob-divider"></div>
+
+  <a class="ui-nav__mob-link" href="profile.html">My Profile</a>
+  <a class="ui-nav__mob-link" href="account.html">Account Settings</a>
+  <button class="ui-nav__mob-link" style="color:var(--ui-error)" data-nav-logout>Sign Out</button>
+
+</div>

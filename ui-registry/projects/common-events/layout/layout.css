@@ -1,0 +1,84 @@
+/* ================================================================
+   COMMON EVENTS — Page Shell Styles
+   FILE: projects/common-events/layout/layout.css
+
+   Use this when linking component CSS files separately
+   (i.e. not using base-layout.html as an all-in-one template).
+
+   Load order in your <head>:
+     1. ../../../../assets/theme.css
+     2. ../../../../components/navbar/navbar.css
+     3. ../../../../components/footer/footer.css
+     4. layout.css   ← this file
+   ================================================================ */
+
+/* ---- Body must be a flex column so footer always hugs bottom ---- */
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Page shell wraps everything between navbar and footer ---- */
+.page-shell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Page header / breadcrumb bar ---- */
+.page-header {
+  background: var(--ui-surface);
+  border-bottom: 1px solid var(--ui-border);
+  padding: 18px 24px;
+}
+.page-header__inner {
+  max-width: var(--page-max-w, 1280px);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.page-header__left { display: flex; flex-direction: column; gap: 4px; }
+
+/* Breadcrumb */
+.page-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--ui-text-3);
+}
+.page-breadcrumb a { color: var(--ui-text-3); text-decoration: none; transition: color var(--t-fast); }
+.page-breadcrumb a:hover { color: var(--ui-primary); }
+.page-breadcrumb__sep { color: var(--ui-text-4); font-size: 10px; }
+
+/* Page title */
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ui-text-1);
+  letter-spacing: -.02em;
+  line-height: 1.2;
+}
+.page-header__actions { display: flex; align-items: center; gap: 8px; }
+
+/* ---- Main content area ---- */
+.page-body {
+  flex: 1;
+  max-width: var(--page-max-w, 1280px);
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+/* ---- Responsive adjustments ---- */
+@media (max-width: 768px) {
+  .page-body   { padding: 20px 16px; }
+  .page-header { padding: 14px 16px; }
+}
+@media (max-width: 480px) {
+  .page-title { font-size: 18px; }
+}

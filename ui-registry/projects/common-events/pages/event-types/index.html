@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Event Types — Common Events</title>
+
+  <!-- Shared tokens -->
+  <link rel="stylesheet" href="../../../../assets/theme.css" />
+
+  <!-- UI components -->
+  <link rel="stylesheet" href="../../../../components/navbar/navbar.css" />
+  <link rel="stylesheet" href="../../../../components/footer/footer.css" />
+  <link rel="stylesheet" href="../../../../components/textbox/textbox.css" />
+  <link rel="stylesheet" href="../../../../components/button/button.css" />
+  <link rel="stylesheet" href="../../../../components/alert/alert.css" />
+  <link rel="stylesheet" href="../../../../components/toggle/toggle.css" />
+  <link rel="stylesheet" href="../../../../components/data-table/data-table.css" />
+
+  <!-- Project layout -->
+  <link rel="stylesheet" href="../../layout/layout.css" />
+
+  <style>
+    /* ---- Page-level tokens ---- */
+    :root {
+      --ui-primary:        #6d28d9;
+      --ui-primary-dark:   #5b21b6;
+      --ui-primary-mid:    #7c3aed;
+      --ui-primary-light:  #ede9fe;
+      --ui-primary-glow:   rgba(109,40,217,.18);
+      --ui-bg:             #f5f3ff;
+      --ui-surface-alt:    #faf7ff;
+      --ui-border:         #ddd6fe;
+      --ui-border-mid:     #c4b5fd;
+      --ui-border-focus:   #6d28d9;
+      --ui-text-1:         #1e1333;
+      --ui-text-2:         #3b2a6e;
+      --ui-text-3:         #6d5a9e;
+      --ui-text-4:         #a897d4;
+      --z-nav: 200; --nav-h: 60px; --nav-max-w: 1280px;
+      --page-max-w: 1280px; --footer-max-w: 1280px;
+    }
+    body { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ---- Event Types page layout ---- */
+    .et-layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* Form card */
+    .et-form-card {
+      background: var(--ui-surface);
+      border: 1px solid var(--ui-border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .et-form-card__header {
+      padding: 18px 20px 16px;
+      border-bottom: 1px solid var(--ui-border);
+      background: var(--ui-surface-alt);
+    }
+    .et-form-card__title { font-size: 15px; font-weight: 700; color: var(--ui-text-1); letter-spacing: -.015em; }
+    .et-form-card__sub   { font-size: 12.5px; color: var(--ui-text-3); margin-top: 3px; }
+    .et-form-card__body  { padding: 20px; }
+    .et-form-fields      { display: flex; flex-direction: column; gap: 18px; }
+    .et-form-card__footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--ui-border);
+      display: flex; gap: 10px; justify-content: flex-end;
+      background: var(--ui-surface-alt);
+    }
+
+    /* Alert area above the two-col layout */
+    .et-alerts            { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .et-alerts:empty      { margin-bottom: 0; }
+
+    /* Code pill in table */
+    .ui-code {
+      font-family: monospace; font-size: 13px;
+      background: var(--ui-primary-light); color: var(--ui-primary-dark);
+      padding: 2px 7px; border-radius: var(--r-sm); font-weight: 600;
+    }
+
+    /* ---- Modal ---- */
+    .ui-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(15,10,30,.45);
+      z-index: 300;
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px;
+      animation: overlayIn 150ms ease;
+    }
+    @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+    .ui-modal-overlay[hidden] { display: none; }
+
+    .ui-modal {
+      background: var(--ui-surface);
+      border-radius: var(--r-xl);
+      box-shadow: var(--sh-xl);
+      padding: 28px;
+      width: 100%;
+      animation: modalIn 180ms cubic-bezier(.34,1.2,.64,1);
+    }
+    @keyframes modalIn { from { opacity:0; transform:scale(.94); } to { opacity:1; transform:scale(1); } }
+
+    .ui-modal--sm   { max-width: 400px; }
+    .ui-modal--md   { max-width: 480px; }
+
+    .ui-modal__header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .ui-modal__header-left { display: flex; align-items: center; gap: 12px; }
+    .ui-modal__icon {
+      width: 48px; height: 48px; border-radius: var(--r-lg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ui-modal__icon--edit   { background: var(--ui-primary-light); color: var(--ui-primary); }
+    .ui-modal__icon--danger { background: #fef2f1; color: #c0281d; }
+
+    .ui-modal__title { font-size: 17px; font-weight: 700; color: var(--ui-text-1); letter-spacing: -.015em; margin-bottom: 0; }
+    .ui-modal__sub   { font-size: 12.5px; color: var(--ui-text-3); margin-top: 2px; }
+    .ui-modal__desc  { font-size: 14px; color: var(--ui-text-3); line-height: 1.6; margin-bottom: 24px; }
+
+    .ui-modal__close {
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1.5px solid var(--ui-border); border-radius: var(--r-md);
+      background: none; cursor: pointer; color: var(--ui-text-3);
+      transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+      outline: none; flex-shrink: 0;
+    }
+    .ui-modal__close:hover { background: var(--ui-surface-alt); border-color: var(--ui-border-mid); color: var(--ui-text-1); }
+    .ui-modal__close:focus-visible { box-shadow: var(--sh-focus); }
+
+    .ui-modal__divider { height: 1px; background: var(--ui-border); margin: 4px 0; }
+    .ui-modal__body    { display: flex; flex-direction: column; gap: 18px; margin-top: 20px; }
+    .ui-modal__actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+    .et-modal-alerts { margin-bottom: 4px; }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 900px) {
+      .et-layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px) {
+      .ui-modal__actions { flex-direction: column-reverse; }
+      .ui-modal__actions .ui-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAVBAR — paste your full navbar + mobile drawer HTML here ══ -->
+
+<!-- ══ PAGE SHELL ══ -->
+<div class="page-shell">
+  <header class="page-header">
+    <div class="page-header__inner">
+      <div class="page-header__left">
+        <h1 class="page-title">Event Types</h1>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-body" id="main-content">
+
+    <!-- Page-level alerts -->
+    <div class="et-alerts" id="etAlerts" aria-live="polite"></div>
+
+    <div class="et-layout">
+
+      <!-- ══ CREATE FORM ══ -->
+      <div class="et-form-card">
+        <div class="et-form-card__header">
+          <div class="et-form-card__title">Add Event Type</div>
+          <div class="et-form-card__sub">Define a new category for your events</div>
+        </div>
+
+        <div class="et-form-card__body">
+          <div class="et-form-fields">
+
+            <!-- Code -->
+            <div class="ui-field" data-field id="fieldCode">
+              <label class="ui-field__label" for="etCode">
+                Event Type Code <span class="ui-field__req" aria-hidden="true">*</span>
+              </label>
+              <div class="ui-field__ctrl">
+                <input class="ui-field__input" type="text" id="etCode"
+                       placeholder="e.g. CONF, WRK-01"
+                       autocomplete="off" spellcheck="false"
+                       aria-required="true" aria-describedby="etCodeErr"
+                       style="text-transform:uppercase" />
+              </div>
+              <span class="ui-field__hint">Letters, numbers and hyphens only</span>
+              <span class="ui-field__err" id="etCodeErr" role="alert" aria-live="polite"></span>
+            </div>
+
+            <!-- Name -->
+            <div class="ui-field" data-field id="fieldName">
+              <label class="ui-field__label" for="etName">
+                Event Type Name <span class="ui-field__req" aria-hidden="true">*</span>
+              </label>
+              <div class="ui-field__ctrl">
+                <input class="ui-field__input" type="text" id="etName"
+                       placeholder="e.g. Conference"
+                       autocomplete="off"
+                       aria-required="true" aria-describedby="etNameErr" />
+              </div>
+              <span class="ui-field__err" id="etNameErr" role="alert" aria-live="polite"></span>
+            </div>
+
+            <!-- Status -->
+            <div class="ui-field">
+              <span class="ui-field__label">Status</span>
+              <div class="ui-toggle-field">
+                <label class="ui-toggle" for="etActive" style="gap:12px">
+                  <input class="ui-toggle__input" type="checkbox" id="etActive" checked />
+                  <span class="ui-toggle__track"><span class="ui-toggle__thumb"></span></span>
+                  <span class="ui-toggle__label" id="etActiveLabel">Active</span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="et-form-card__footer">
+          <button type="button" class="ui-btn ui-btn--ghost ui-btn--sm" id="etResetBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3"/></svg>
+            Reset
+          </button>
+          <button type="button" class="ui-btn ui-btn--primary ui-btn--sm" id="etSubmitBtn">
+            <span class="ui-btn__lbl">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Type
+            </span>
+            <span class="ui-btn__spin" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ══ TABLE ══ -->
+      <div id="etTable"></div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ══ FOOTER — paste your full footer HTML here ══ -->
+
+<!-- ══ EDIT MODAL ══ -->
+<div class="ui-modal-overlay" id="editModal" hidden
+     role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+  <div class="ui-modal ui-modal--md">
+
+    <div class="ui-modal__header">
+      <div class="ui-modal__header-left">
+        <div class="ui-modal__icon ui-modal__icon--edit" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+        <div>
+          <h2 class="ui-modal__title" id="editModalTitle">Edit Event Type</h2>
+          <p class="ui-modal__sub" id="editModalSub"></p>
+        </div>
+      </div>
+      <button class="ui-modal__close" id="editModalClose" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="ui-modal__divider"></div>
+
+    <!-- Modal alerts -->
+    <div class="et-modal-alerts" id="editModalAlerts"></div>
+
+    <div class="ui-modal__body">
+      <input type="hidden" id="editId" />
+
+      <!-- Code (read-only) -->
+      <div class="ui-field" data-field id="editFieldCode">
+        <label class="ui-field__label" for="editCode">Event Type Code</label>
+        <div class="ui-field__ctrl">
+          <input class="ui-field__input" type="text" id="editCode"
+                 style="background:var(--ui-surface-alt);cursor:not-allowed;opacity:0.7"
+                 readonly />
+        </div>
+        <span class="ui-field__hint">Code cannot be changed after creation</span>
+      </div>
+
+      <!-- Name -->
+      <div class="ui-field" data-field id="editFieldName">
+        <label class="ui-field__label" for="editName">
+          Event Type Name <span class="ui-field__req" aria-hidden="true">*</span>
+        </label>
+        <div class="ui-field__ctrl">
+          <input class="ui-field__input" type="text" id="editName"
+                 placeholder="e.g. Conference" autocomplete="off"
+                 aria-required="true" aria-describedby="editNameErr" />
+        </div>
+        <span class="ui-field__err" id="editNameErr" role="alert" aria-live="polite"></span>
+      </div>
+
+      <!-- Status -->
+      <div class="ui-field">
+        <span class="ui-field__label">Status</span>
+        <div class="ui-toggle-field">
+          <label class="ui-toggle" for="editActive" style="gap:12px">
+            <input class="ui-toggle__input" type="checkbox" id="editActive" />
+            <span class="ui-toggle__track"><span class="ui-toggle__thumb"></span></span>
+            <span class="ui-toggle__label" id="editActiveLabel">Active</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui-modal__divider" style="margin-top:8px"></div>
+
+    <div class="ui-modal__actions">
+      <button type="button" class="ui-btn ui-btn--ghost ui-btn--sm" id="editCancelBtn">Cancel</button>
+      <button type="button" class="ui-btn ui-btn--primary ui-btn--sm" id="editSaveBtn">
+        <span class="ui-btn__lbl">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save Changes
+        </span>
+        <span class="ui-btn__spin" aria-hidden="true"></span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ DELETE MODAL ══ -->
+<div class="ui-modal-overlay" id="deleteModal" hidden
+     role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+  <div class="ui-modal ui-modal--sm">
+    <div class="ui-modal__icon ui-modal__icon--danger" aria-hidden="true" style="margin-bottom:16px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+    </div>
+    <h2 class="ui-modal__title" id="deleteModalTitle">Delete Event Type?</h2>
+    <p  class="ui-modal__desc" id="deleteModalDesc">This action cannot be undone.</p>
+    <!-- Error shown here on API failure -->
+    <div id="deleteModalErr"></div>
+    <div class="ui-modal__actions">
+      <button type="button" class="ui-btn ui-btn--ghost ui-btn--sm" id="deleteCancelBtn">Cancel</button>
+      <button type="button" class="ui-btn ui-btn--danger ui-btn--sm" id="deleteConfirmBtn">
+        <span class="ui-btn__lbl">Delete</span>
+        <span class="ui-btn__spin" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCRIPTS ══ -->
+<script src="../../../../components/navbar/navbar.js"></script>
+<script src="../../../../components/footer/footer.js"></script>
+<script src="../../../../components/data-table/data-table.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ── Nav + footer ── */
+  const nav = document.querySelector('[data-nav]');
+  if (nav && typeof UINavbar !== 'undefined') {
+    UINavbar.setUser(nav, { name: 'Jane Doe', email: 'jane@commonevents.org', role: 'Event Coordinator' });
+    UINavbar.onLogout(nav, () => { location.href = '../../pages/login/login.html'; });
+  }
+  if (typeof UIFooter !== 'undefined') UIFooter.initAll();
+  document.querySelectorAll('[data-footer-year]').forEach(el => el.textContent = new Date().getFullYear());
+
+  /* ── DOM refs ── */
+  const alertsEl       = document.getElementById('etAlerts');
+  const fieldCode      = document.getElementById('fieldCode');
+  const fieldName      = document.getElementById('fieldName');
+  const inputCode      = document.getElementById('etCode');
+  const inputName      = document.getElementById('etName');
+  const inputActive    = document.getElementById('etActive');
+  const activeLabel    = document.getElementById('etActiveLabel');
+  const submitBtn      = document.getElementById('etSubmitBtn');
+  const resetBtn       = document.getElementById('etResetBtn');
+
+  const editModal      = document.getElementById('editModal');
+  const editModalAlerts= document.getElementById('editModalAlerts');
+  const editModalSub   = document.getElementById('editModalSub');
+  const editModalClose = document.getElementById('editModalClose');
+  const editFieldName  = document.getElementById('editFieldName');
+  const editIdInput    = document.getElementById('editId');
+  const editInputCode  = document.getElementById('editCode');
+  const editInputName  = document.getElementById('editName');
+  const editInputActive= document.getElementById('editActive');
+  const editActiveLabel= document.getElementById('editActiveLabel');
+  const editCancelBtn  = document.getElementById('editCancelBtn');
+  const editSaveBtn    = document.getElementById('editSaveBtn');
+
+  const deleteModal    = document.getElementById('deleteModal');
+  const deleteModalDesc= document.getElementById('deleteModalDesc');
+  const deleteModalErr = document.getElementById('deleteModalErr');
+  const deleteCancelBtn  = document.getElementById('deleteCancelBtn');
+  const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
+
+  /* ── Icons + SVGs ── */
+  const ICONS = {
+    success: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+    error:   `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  };
+  const CLOSE_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+
+  /* ── Alert helpers ── */
+  function makeAlert(type, msg) {
+    const el = document.createElement('div');
+    el.className = `ui-alert ui-alert--${type} ui-alert--dismissible`;
+    el.setAttribute('role', type === 'error' ? 'alert' : 'status');
+    el.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+    el.innerHTML = `<span class="ui-alert__icon" aria-hidden="true">${ICONS[type] || ICONS.error}</span><div class="ui-alert__body"><span class="ui-alert__msg">${msg}</span></div><button type="button" class="ui-alert__x" aria-label="Dismiss">${CLOSE_SVG}</button>`;
+    const dismiss = () => {
+      el.classList.add('dismissing');
+      el.addEventListener('animationend', () => el.remove(), { once: true });
+    };
+    el.querySelector('.ui-alert__x').addEventListener('click', dismiss);
+    return { el, dismiss };
+  }
+
+  function showPageAlert(type, msg, autoClose = true) {
+    alertsEl.innerHTML = '';
+    const { el, dismiss } = makeAlert(type, msg);
+    alertsEl.appendChild(el);
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (autoClose) setTimeout(dismiss, 5000);
+  }
+
+  function showModalAlert(container, type, msg) {
+    container.innerHTML = '';
+    const { el } = makeAlert(type, msg);
+    el.style.marginBottom = '12px';
+    container.appendChild(el);
+  }
+
+  /* ── Field error helpers ── */
+  function setFieldError(fieldEl, inputEl, msg) {
+    fieldEl.classList.add('ui-field--error');
+    const e = fieldEl.querySelector('.ui-field__err');
+    if (e) e.textContent = msg;
+    if (inputEl) inputEl.setAttribute('aria-invalid', 'true');
+  }
+  function clearFieldError(fieldEl, inputEl) {
+    fieldEl.classList.remove('ui-field--error');
+    const e = fieldEl.querySelector('.ui-field__err');
+    if (e) e.textContent = '';
+    if (inputEl) inputEl.removeAttribute('aria-invalid');
+  }
+
+  /* ── Auto-uppercase + filter create code input ── */
+  inputCode.addEventListener('input', e => {
+    const pos = e.target.selectionStart;
+    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9\-]/g, '');
+    e.target.setSelectionRange(pos, pos);
+    clearFieldError(fieldCode, inputCode);
+  });
+  inputName.addEventListener('input', () => clearFieldError(fieldName, inputName));
+
+  /* ── Toggle label sync ── */
+  inputActive.addEventListener('change', () => {
+    activeLabel.textContent = inputActive.checked ? 'Active' : 'Inactive';
+  });
+  editInputActive.addEventListener('change', () => {
+    editActiveLabel.textContent = editInputActive.checked ? 'Active' : 'Inactive';
+  });
+
+  /* ── Seed data ── */
+  const seedData = [
+    { id: 1, code: 'CONF',   name: 'Conference',        active: true  },
+    { id: 2, code: 'WRK',    name: 'Workshop',          active: true  },
+    { id: 3, code: 'SEM',    name: 'Seminar',           active: true  },
+    { id: 4, code: 'FUND',   name: 'Fundraiser',        active: false },
+    { id: 5, code: 'COMM',   name: 'Community Drive',   active: true  },
+    { id: 6, code: 'OUTRCH', name: 'Outreach Program',  active: true  },
+    { id: 7, code: 'VOL',    name: 'Volunteer Activity', active: false },
+    { id: 8, code: 'GALA',   name: 'Gala / Dinner',     active: true  },
+  ];
+  let nextId = seedData.length + 1;
+
+  /* ── Init table ── */
+  const table = UIDataTable.create(document.getElementById('etTable'), {
+    columns: [
+      { key: 'code',   label: 'Code',   sortable: true,
+        render: v => `<span class="ui-code">${v}</span>` },
+      { key: 'name',   label: 'Name',   sortable: true },
+      { key: 'active', label: 'Status', sortable: true,
+        render: v => v
+          ? `<span class="ui-badge ui-badge--active">Active</span>`
+          : `<span class="ui-badge ui-badge--inactive">Inactive</span>` },
+    ],
+    data: seedData,
+    perPage: 5,
+    searchKeys: ['code', 'name'],
+    onEdit:   openEditModal,
+    onDelete: openDeleteModal,
+    emptyTitle: 'No event types yet',
+    emptyDesc:  'Add your first event type using the form on the left.',
+  });
+
+  /* ════════════════════════════════
+     SIMULATED API CALLS
+     Replace with real fetch() calls.
+  ════════════════════════════════ */
+  let _demoCount = 0;
+
+  function apiCreate(data) {
+    return new Promise(resolve =>
+      setTimeout(() => resolve({ id: nextId++, ...data }), 700));
+  }
+
+  function apiUpdate(id, data) {
+    return new Promise((resolve, reject) =>
+      setTimeout(() => {
+        _demoCount++;
+        // Every 3rd call fails so you can see the error alert
+        _demoCount % 3 === 0
+          ? reject(new Error('Server error: Failed to save. Please try again.'))
+          : resolve({ id, ...data });
+      }, 800));
+  }
+
+  function apiDelete(id) {
+    return new Promise((resolve, reject) =>
+      setTimeout(() => {
+        _demoCount++;
+        // Every 4th call fails
+        _demoCount % 4 === 0
+          ? reject(new Error('Server error: Could not delete. Please try again.'))
+          : resolve({ deleted: true });
+      }, 600));
+  }
+
+  /* ════════════════════════════════
+     CREATE FORM
+  ════════════════════════════════ */
+  function validateCreate() {
+    let ok = true;
+    const code = inputCode.value.trim();
+    const name = inputName.value.trim();
+
+    if (!code) {
+      setFieldError(fieldCode, inputCode, 'Event Type Code is required.'); ok = false;
+    } else if (!/^[A-Z0-9\-]+$/.test(code)) {
+      setFieldError(fieldCode, inputCode, 'Only letters, numbers and hyphens allowed.'); ok = false;
+    } else if (table.getData().find(r => r.code === code)) {
+      setFieldError(fieldCode, inputCode, `Code "${code}" already exists.`); ok = false;
+    }
+
+    if (!name) {
+      setFieldError(fieldName, inputName, 'Event Type Name is required.'); ok = false;
+    } else if (name.length < 2) {
+      setFieldError(fieldName, inputName, 'Name must be at least 2 characters.'); ok = false;
+    }
+
+    if (!ok) showPageAlert('error', 'Please fix the highlighted fields before submitting.', false);
+    return ok;
+  }
+
+  function resetCreate() {
+    inputCode.value = '';
+    inputName.value = '';
+    inputActive.checked = true;
+    activeLabel.textContent = 'Active';
+    clearFieldError(fieldCode, inputCode);
+    clearFieldError(fieldName, inputName);
+    alertsEl.innerHTML = '';
+  }
+
+  resetBtn.addEventListener('click', resetCreate);
+
+  submitBtn.addEventListener('click', async () => {
+    alertsEl.innerHTML = '';
+    if (!validateCreate()) return;
+
+    const payload = {
+      code:   inputCode.value.trim(),
+      name:   inputName.value.trim(),
+      active: inputActive.checked,
+    };
+
+    submitBtn.classList.add('ui-btn--loading');
+    try {
+      const result = await apiCreate(payload);
+      table.addRow(result);
+      showPageAlert('success', `Event type "${result.name}" added successfully.`);
+      resetCreate();
+      inputCode.focus();
+    } catch (err) {
+      showPageAlert('error', err.message || 'Failed to add event type. Please try again.', false);
+    } finally {
+      submitBtn.classList.remove('ui-btn--loading');
+    }
+  });
+
+  /* ════════════════════════════════
+     EDIT MODAL
+  ════════════════════════════════ */
+  function openEditModal(row) {
+    editIdInput.value           = row.id;
+    editInputCode.value         = row.code;
+    editInputName.value         = row.name;
+    editInputActive.checked     = row.active;
+    editActiveLabel.textContent = row.active ? 'Active' : 'Inactive';
+    editModalSub.textContent    = `Code: ${row.code}`;
+    editModalAlerts.innerHTML   = '';
+    clearFieldError(editFieldName, editInputName);
+    editModal.hidden = false;
+    requestAnimationFrame(() => editInputName.focus());
+  }
+
+  function closeEditModal() {
+    editModal.hidden = true;
+    editIdInput.value = '';
+  }
+
+  function validateEdit() {
+    let ok = true;
+    const name = editInputName.value.trim();
+    if (!name) {
+      setFieldError(editFieldName, editInputName, 'Event Type Name is required.'); ok = false;
+    } else if (name.length < 2) {
+      setFieldError(editFieldName, editInputName, 'Name must be at least 2 characters.'); ok = false;
+    }
+    if (!ok) showModalAlert(editModalAlerts, 'error', 'Please fix the highlighted fields before saving.');
+    return ok;
+  }
+
+  editInputName.addEventListener('input', () => clearFieldError(editFieldName, editInputName));
+
+  editSaveBtn.addEventListener('click', async () => {
+    editModalAlerts.innerHTML = '';
+    if (!validateEdit()) return;
+
+    const editId  = Number(editIdInput.value);
+    const payload = {
+      name:   editInputName.value.trim(),
+      active: editInputActive.checked,
+    };
+
+    editSaveBtn.classList.add('ui-btn--loading');
+    try {
+      await apiUpdate(editId, payload);
+      table.updateRow('id', editId, payload);
+      closeEditModal();
+      showPageAlert('success', `Event type "${payload.name}" updated successfully.`);
+    } catch (err) {
+      showModalAlert(editModalAlerts, 'error', err.message || 'Failed to save changes. Please try again.');
+    } finally {
+      editSaveBtn.classList.remove('ui-btn--loading');
+    }
+  });
+
+  editCancelBtn.addEventListener('click', closeEditModal);
+  editModalClose.addEventListener('click', closeEditModal);
+  editModal.addEventListener('click', e => { if (e.target === editModal) closeEditModal(); });
+
+  /* ════════════════════════════════
+     DELETE MODAL
+  ════════════════════════════════ */
+  let pendingDelete = null;
+
+  function openDeleteModal(row) {
+    pendingDelete = row;
+    deleteModalDesc.textContent = `Are you sure you want to delete "${row.name}" (${row.code})? This action cannot be undone.`;
+    deleteModalErr.innerHTML    = '';
+    deleteModal.hidden = false;
+    deleteConfirmBtn.focus();
+  }
+
+  function closeDeleteModal() {
+    deleteModal.hidden = true;
+    pendingDelete = null;
+  }
+
+  deleteCancelBtn.addEventListener('click', closeDeleteModal);
+  deleteModal.addEventListener('click', e => { if (e.target === deleteModal) closeDeleteModal(); });
+
+  deleteConfirmBtn.addEventListener('click', async () => {
+    if (!pendingDelete) return;
+    const row = pendingDelete;
+    deleteModalErr.innerHTML = '';
+    deleteConfirmBtn.classList.add('ui-btn--loading');
+    deleteCancelBtn.disabled = true;
+    try {
+      await apiDelete(row.id);
+      table.deleteRow('id', row.id);
+      closeDeleteModal();
+      showPageAlert('success', `Event type "${row.name}" has been deleted.`);
+    } catch (err) {
+      showModalAlert(deleteModalErr, 'error', err.message || 'Failed to delete. Please try again.');
+    } finally {
+      deleteConfirmBtn.classList.remove('ui-btn--loading');
+      deleteCancelBtn.disabled = false;
+    }
+  });
+
+  /* ════════════════════════════════
+     GLOBAL ESCAPE KEY
+  ════════════════════════════════ */
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (!editModal.hidden)   closeEditModal();
+    if (!deleteModal.hidden) closeDeleteModal();
+  });
+
+})();
+</script>
+
+</body>
+</html>
