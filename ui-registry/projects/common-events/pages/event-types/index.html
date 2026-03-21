@@ -17,6 +17,9 @@
   <link rel="stylesheet" href="../../../../components/toggle/toggle.css" />
   <link rel="stylesheet" href="../../../../components/data-table/data-table.css" />
 
+  <!-- Alert utility -->
+  <script src="../../../../components/alert/alert.js"></script>
+
   <!-- Project layout -->
   <link rel="stylesheet" href="../../layout/layout.css" />
 
@@ -401,43 +404,6 @@
   const deleteCancelBtn  = document.getElementById('deleteCancelBtn');
   const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
 
-  /* ── Icons + SVGs ── */
-  const ICONS = {
-    success: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
-    error:   `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
-  };
-  const CLOSE_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
-
-  /* ── Alert helpers ── */
-  function makeAlert(type, msg) {
-    const el = document.createElement('div');
-    el.className = `ui-alert ui-alert--${type} ui-alert--dismissible`;
-    el.setAttribute('role', type === 'error' ? 'alert' : 'status');
-    el.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
-    el.innerHTML = `<span class="ui-alert__icon" aria-hidden="true">${ICONS[type] || ICONS.error}</span><div class="ui-alert__body"><span class="ui-alert__msg">${msg}</span></div><button type="button" class="ui-alert__x" aria-label="Dismiss">${CLOSE_SVG}</button>`;
-    const dismiss = () => {
-      el.classList.add('dismissing');
-      el.addEventListener('animationend', () => el.remove(), { once: true });
-    };
-    el.querySelector('.ui-alert__x').addEventListener('click', dismiss);
-    return { el, dismiss };
-  }
-
-  function showPageAlert(type, msg, autoClose = true) {
-    alertsEl.innerHTML = '';
-    const { el, dismiss } = makeAlert(type, msg);
-    alertsEl.appendChild(el);
-    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    if (autoClose) setTimeout(dismiss, 5000);
-  }
-
-  function showModalAlert(container, type, msg) {
-    container.innerHTML = '';
-    const { el } = makeAlert(type, msg);
-    el.style.marginBottom = '12px';
-    container.appendChild(el);
-  }
-
   /* ── Field error helpers ── */
   function setFieldError(fieldEl, inputEl, msg) {
     fieldEl.classList.add('ui-field--error');
@@ -557,7 +523,7 @@
       setFieldError(fieldName, inputName, 'Name must be at least 2 characters.'); ok = false;
     }
 
-    if (!ok) showPageAlert('error', 'Please fix the highlighted fields before submitting.', false);
+    if (!ok) UIAlert.showInContainer(alertsEl, 'error', 'Please fix the highlighted fields before submitting.');
     return ok;
   }
 
@@ -587,11 +553,11 @@
     try {
       const result = await apiCreate(payload);
       table.addRow(result);
-      showPageAlert('success', `Event type "${result.name}" added successfully.`);
+      UIAlert.showInContainer(alertsEl, 'success', `Event type "${result.name}" added successfully.`, undefined, 5000);
       resetCreate();
       inputCode.focus();
     } catch (err) {
-      showPageAlert('error', err.message || 'Failed to add event type. Please try again.', false);
+      UIAlert.showInContainer(alertsEl, 'error', err.message || 'Failed to add event type. Please try again.');
     } finally {
       submitBtn.classList.remove('ui-btn--loading');
     }
@@ -626,7 +592,7 @@
     } else if (name.length < 2) {
       setFieldError(editFieldName, editInputName, 'Name must be at least 2 characters.'); ok = false;
     }
-    if (!ok) showModalAlert(editModalAlerts, 'error', 'Please fix the highlighted fields before saving.');
+    if (!ok) UIAlert.showInContainer(editModalAlerts, 'error', 'Please fix the highlighted fields before saving.');
     return ok;
   }
 
@@ -647,9 +613,9 @@
       await apiUpdate(editId, payload);
       table.updateRow('id', editId, payload);
       closeEditModal();
-      showPageAlert('success', `Event type "${payload.name}" updated successfully.`);
+      UIAlert.showInContainer(alertsEl, 'success', `Event type "${payload.name}" updated successfully.`, undefined, 5000);
     } catch (err) {
-      showModalAlert(editModalAlerts, 'error', err.message || 'Failed to save changes. Please try again.');
+      UIAlert.showInContainer(editModalAlerts, 'error', err.message || 'Failed to save changes. Please try again.');
     } finally {
       editSaveBtn.classList.remove('ui-btn--loading');
     }
@@ -690,9 +656,9 @@
       await apiDelete(row.id);
       table.deleteRow('id', row.id);
       closeDeleteModal();
-      showPageAlert('success', `Event type "${row.name}" has been deleted.`);
+      UIAlert.showInContainer(alertsEl, 'success', `Event type "${row.name}" has been deleted.`, undefined, 5000);
     } catch (err) {
-      showModalAlert(deleteModalErr, 'error', err.message || 'Failed to delete. Please try again.');
+      UIAlert.showInContainer(deleteModalErr, 'error', err.message || 'Failed to delete. Please try again.');
     } finally {
       deleteConfirmBtn.classList.remove('ui-btn--loading');
       deleteCancelBtn.disabled = false;
