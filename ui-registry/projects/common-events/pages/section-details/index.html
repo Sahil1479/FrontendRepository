@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sections — Common Events</title>
+
+  <!-- Shared tokens -->
+  <link rel="stylesheet" href="../../../../assets/theme.css" />
+
+  <!-- UI components (link from registry) -->
+  <link rel="stylesheet" href="../../../../components/navbar/navbar.css" />
+  <link rel="stylesheet" href="../../../../components/footer/footer.css" />
+  <link rel="stylesheet" href="../../../../components/textbox/textbox.css" />
+  <link rel="stylesheet" href="../../../../components/button/button.css" />
+  <link rel="stylesheet" href="../../../../components/alert/alert.css" />
+  <link rel="stylesheet" href="../../../../components/toggle/toggle.css" />
+  <link rel="stylesheet" href="../../../../components/data-table/data-table.css" />
+  <link rel="stylesheet" href="../../layout/layout.css" />
+
+  <style>
+    /* ── Design tokens (violet theme) ── */
+    :root {
+      --ui-primary:        #6d28d9;
+      --ui-primary-dark:   #5b21b6;
+      --ui-primary-mid:    #7c3aed;
+      --ui-primary-light:  #ede9fe;
+      --ui-primary-glow:   rgba(109,40,217,.18);
+      --ui-white:          #fff;
+      --ui-bg:             #f5f3ff;
+      --ui-surface:        #fff;
+      --ui-surface-alt:    #faf7ff;
+      --ui-border:         #ddd6fe;
+      --ui-border-mid:     #c4b5fd;
+      --ui-border-focus:   #6d28d9;
+      --ui-text-1:         #1e1333;
+      --ui-text-2:         #3b2a6e;
+      --ui-text-3:         #6d5a9e;
+      --ui-text-4:         #a897d4;
+      --ui-error:          #c0281d;
+      --ui-error-bg:       #fef2f1;
+      --ui-error-border:   #f0b4b0;
+      --ui-error-glow:     rgba(192,40,29,.15);
+      --ui-success:        #16a34a;
+      --ui-success-bg:     #f0fdf4;
+      --ui-success-border: #86efac;
+      --ui-info:           #1358a0;
+      --ui-info-bg:        #e7eefb;
+      --ui-info-border:    #97bce6;
+      --ui-font: -apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,'Helvetica Neue',Arial,sans-serif;
+      --r-sm:4px; --r-md:8px; --r-lg:12px; --r-xl:16px; --r-full:9999px;
+      --sh-xs:    0 1px 2px rgba(15,10,30,.06);
+      --sh-sm:    0 2px 8px rgba(15,10,30,.09),0 1px 2px rgba(15,10,30,.04);
+      --sh-md:    0 4px 16px rgba(15,10,30,.10),0 2px 4px rgba(15,10,30,.05);
+      --sh-lg:    0 8px 30px rgba(15,10,30,.12),0 2px 8px rgba(15,10,30,.06);
+      --sh-xl:    0 20px 60px rgba(15,10,30,.15),0 4px 16px rgba(15,10,30,.08);
+      --sh-focus: 0 0 0 3px var(--ui-primary-glow);
+      --t-fast:100ms ease; --t-base:180ms ease;
+      --t-bounce:250ms cubic-bezier(.34,1.56,.64,1);
+      --z-dropdown:100; --z-nav:200;
+      --nav-h:60px; --nav-max-w:1280px;
+      --page-max-w:1280px; --footer-max-w:1280px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    body{font-family:var(--ui-font);font-size:15px;color:var(--ui-text-1);background:var(--ui-bg);line-height:1.55;min-height:100vh;display:flex;flex-direction:column}
+
+    /* ══════════════════════════════════════════
+       NAVBAR (inlined for standalone use)
+    ══════════════════════════════════════════ */
+    .ui-nav{position:sticky;top:0;z-index:var(--z-nav);width:100%;height:var(--nav-h);background:var(--ui-surface);border-bottom:1px solid var(--ui-border);box-shadow:var(--sh-xs);display:flex;align-items:center}
+    .ui-nav__inner{width:100%;max-width:var(--nav-max-w);margin:0 auto;padding:0 24px;display:flex;align-items:center;height:100%}
+    .ui-nav__logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;margin-right:32px;outline:none}
+    .ui-nav__logo-mark{width:34px;height:34px;background:var(--ui-primary);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0;transition:background var(--t-base)}
+    .ui-nav__logo:hover .ui-nav__logo-mark{background:var(--ui-primary-dark)}
+    .ui-nav__logo-name{font-size:14px;font-weight:700;color:var(--ui-text-1);letter-spacing:-.02em}
+    .ui-nav__links{display:flex;align-items:center;gap:2px;list-style:none;height:100%;flex:1}
+    .ui-nav__item{position:relative;height:100%;display:flex;align-items:center}
+    .ui-nav__link{display:flex;align-items:center;gap:6px;height:100%;padding:0 14px;font-size:13.5px;font-weight:500;color:var(--ui-text-2);text-decoration:none;white-space:nowrap;border:none;background:none;cursor:pointer;font-family:var(--ui-font);outline:none;position:relative;transition:color var(--t-base)}
+    .ui-nav__link::after{content:'';position:absolute;bottom:0;left:14px;right:14px;height:2px;background:var(--ui-primary);border-radius:2px 2px 0 0;transform:scaleX(0);transform-origin:center;transition:transform var(--t-base)}
+    .ui-nav__link:hover{color:var(--ui-text-1)}
+    .ui-nav__link.active{color:var(--ui-primary);font-weight:600}
+    .ui-nav__link.active::after{transform:scaleX(1)}
+    .ui-nav__chev{width:14px;height:14px;color:var(--ui-text-4);transition:transform var(--t-base),color var(--t-base);flex-shrink:0}
+    .ui-nav__item--open>.ui-nav__link .ui-nav__chev{transform:rotate(180deg);color:var(--ui-primary)}
+    .ui-nav__dropdown{position:absolute;top:calc(100% + 4px);left:0;min-width:220px;background:var(--ui-surface);border:1px solid var(--ui-border);border-radius:var(--r-lg);box-shadow:var(--sh-lg);padding:6px;display:none;flex-direction:column;z-index:var(--z-dropdown);animation:navDropIn 140ms ease}
+    @keyframes navDropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+    .ui-nav__item--open>.ui-nav__dropdown{display:flex}
+    .ui-nav__drop-group{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ui-text-4);padding:8px 10px 4px}
+    .ui-nav__drop-div{height:1px;background:var(--ui-border);margin:4px 6px}
+    .ui-nav__drop-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--r-md);font-size:13.5px;font-weight:500;color:var(--ui-text-2);text-decoration:none;cursor:pointer;transition:background var(--t-fast),color var(--t-fast);border:none;background:none;width:100%;text-align:left;font-family:var(--ui-font);outline:none}
+    .ui-nav__drop-item:hover{background:var(--ui-surface-alt);color:var(--ui-text-1)}
+    .ui-nav__drop-item.active{background:var(--ui-primary-light);color:var(--ui-primary-dark);font-weight:600}
+    .ui-nav__drop-icon{width:16px;height:16px;color:var(--ui-text-3);flex-shrink:0}
+    .ui-nav__drop-item:hover .ui-nav__drop-icon,.ui-nav__drop-item.active .ui-nav__drop-icon{color:var(--ui-primary)}
+    .ui-nav__drop-meta{display:flex;flex-direction:column;gap:1px}
+    .ui-nav__drop-label{font-size:13.5px;font-weight:500}
+    .ui-nav__drop-desc{font-size:11.5px;color:var(--ui-text-3)}
+    .ui-nav__actions{display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0}
+    .ui-nav__profile-btn{display:flex;align-items:center;gap:8px;padding:5px 10px 5px 6px;background:none;border:1.5px solid var(--ui-border);border-radius:var(--r-full);cursor:pointer;font-family:var(--ui-font);outline:none;transition:border-color var(--t-base),background var(--t-base),box-shadow var(--t-base)}
+    .ui-nav__profile-btn:hover{border-color:var(--ui-border-mid);background:var(--ui-surface-alt)}
+    .ui-nav__profile-btn:focus-visible{box-shadow:var(--sh-focus);border-color:var(--ui-border-focus)}
+    .ui-nav__item--open>.ui-nav__profile-btn{border-color:var(--ui-primary);background:var(--ui-primary-light)}
+    .ui-nav__avatar{width:28px;height:28px;border-radius:50%;background:var(--ui-primary);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+    .ui-nav__profile-name{font-size:13px;font-weight:600;color:var(--ui-text-1);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .ui-nav__profile-chev{width:14px;height:14px;color:var(--ui-text-3);transition:transform var(--t-base);flex-shrink:0}
+    .ui-nav__item--open>.ui-nav__profile-btn .ui-nav__profile-chev{transform:rotate(180deg)}
+    .ui-nav__profile-drop{right:0;left:auto;min-width:240px}
+    .ui-nav__profile-card{padding:12px 14px 10px;border-bottom:1px solid var(--ui-border);margin-bottom:4px}
+    .ui-nav__profile-card-name{font-size:14px;font-weight:700;color:var(--ui-text-1);margin-bottom:2px}
+    .ui-nav__profile-card-email{font-size:12px;color:var(--ui-text-3);word-break:break-all}
+    .ui-nav__profile-card-role{display:inline-flex;align-items:center;margin-top:7px;padding:2px 8px;font-size:11px;font-weight:600;background:var(--ui-primary-light);color:var(--ui-primary-dark);border-radius:var(--r-full)}
+    .ui-nav__drop-item--danger{color:var(--ui-error)}
+    .ui-nav__drop-item--danger:hover{background:var(--ui-error-bg);color:var(--ui-error)}
+    .ui-nav__hamburger{display:none;align-items:center;justify-content:center;width:38px;height:38px;background:none;border:1.5px solid var(--ui-border);border-radius:var(--r-md);cursor:pointer;color:var(--ui-text-2);margin-left:auto;transition:background var(--t-fast),border-color var(--t-fast);outline:none;flex-shrink:0}
+    .ui-nav__hamburger:hover{background:var(--ui-surface-alt);border-color:var(--ui-border-mid)}
+    .ui-nav__ham-lines{display:flex;flex-direction:column;gap:4px;pointer-events:none}
+    .ui-nav__ham-line{display:block;width:16px;height:1.5px;background:currentColor;border-radius:2px;transition:transform var(--t-base),opacity var(--t-base);transform-origin:center}
+    .ui-nav__hamburger[aria-expanded="true"] .ui-nav__ham-line:nth-child(1){transform:translateY(5.5px) rotate(45deg)}
+    .ui-nav__hamburger[aria-expanded="true"] .ui-nav__ham-line:nth-child(2){opacity:0;transform:scaleX(0)}
+    .ui-nav__hamburger[aria-expanded="true"] .ui-nav__ham-line:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}
+    .ui-nav__mobile-panel{display:none;position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;background:var(--ui-surface);overflow-y:auto;border-top:1px solid var(--ui-border);flex-direction:column;z-index:calc(var(--z-nav) - 1);padding:12px 16px 32px;animation:mobileDrawerIn 200ms ease}
+    @keyframes mobileDrawerIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+    .ui-nav__mobile-panel.open{display:flex}
+    .ui-nav__mob-link{display:flex;align-items:center;justify-content:space-between;padding:11px 12px;border-radius:var(--r-md);font-size:14px;font-weight:500;color:var(--ui-text-2);text-decoration:none;cursor:pointer;transition:background var(--t-fast),color var(--t-fast);border:none;background:none;width:100%;font-family:var(--ui-font);text-align:left}
+    .ui-nav__mob-link:hover{background:var(--ui-surface-alt);color:var(--ui-text-1)}
+    .ui-nav__mob-link.active{background:var(--ui-primary-light);color:var(--ui-primary-dark);font-weight:600}
+    .ui-nav__mob-chev{width:14px;height:14px;color:var(--ui-text-4);transition:transform var(--t-base);flex-shrink:0}
+    .ui-nav__mob-item--open>.ui-nav__mob-link .ui-nav__mob-chev{transform:rotate(180deg)}
+    .ui-nav__mob-sub{display:none;flex-direction:column;padding-left:12px;border-left:2px solid var(--ui-border);margin:2px 0 2px 22px}
+    .ui-nav__mob-item--open>.ui-nav__mob-sub{display:flex}
+    .ui-nav__mob-sub-link{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--r-md);font-size:13.5px;font-weight:500;color:var(--ui-text-2);text-decoration:none;transition:background var(--t-fast),color var(--t-fast)}
+    .ui-nav__mob-sub-link:hover{background:var(--ui-surface-alt);color:var(--ui-text-1)}
+    .ui-nav__mob-divider{height:1px;background:var(--ui-border);margin:8px 0}
+    .ui-nav__mob-profile{display:flex;align-items:center;gap:12px;padding:12px;background:var(--ui-surface-alt);border-radius:var(--r-lg);margin-bottom:8px}
+    .ui-nav__mob-profile-info{flex:1;min-width:0}
+    .ui-nav__mob-profile-name{font-size:14px;font-weight:700;color:var(--ui-text-1)}
+    .ui-nav__mob-profile-email{font-size:12px;color:var(--ui-text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+    /* ══════════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════════ */
+    .ui-footer{background:var(--ui-surface);border-top:1px solid var(--ui-border);margin-top:auto}
+    .ui-footer__inner{max-width:var(--footer-max-w);margin:0 auto;padding:40px 24px 28px}
+    .ui-footer__main{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:32px 24px;padding-bottom:32px;border-bottom:1px solid var(--ui-border)}
+    .ui-footer__brand{display:flex;flex-direction:column;gap:12px}
+    .ui-footer__logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;width:fit-content}
+    .ui-footer__logo-mark{width:32px;height:32px;background:var(--ui-primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0}
+    .ui-footer__logo-name{font-size:14px;font-weight:700;color:var(--ui-text-1);letter-spacing:-.02em}
+    .ui-footer__brand-desc{font-size:13px;color:var(--ui-text-3);line-height:1.65;max-width:260px}
+    .ui-footer__col-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ui-text-2);margin-bottom:14px}
+    .ui-footer__links{list-style:none;display:flex;flex-direction:column;gap:8px}
+    .ui-footer__link{font-size:13.5px;color:var(--ui-text-3);text-decoration:none;transition:color var(--t-base)}
+    .ui-footer__link:hover{color:var(--ui-primary)}
+    .ui-footer__bottom{display:flex;align-items:center;justify-content:space-between;padding-top:20px;gap:16px;flex-wrap:wrap}
+    .ui-footer__copy{font-size:12.5px;color:var(--ui-text-4)}
+    .ui-footer__bottom-links{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+    .ui-footer__bottom-link{font-size:12.5px;color:var(--ui-text-4);text-decoration:none;transition:color var(--t-base)}
+    .ui-footer__bottom-link:hover{color:var(--ui-text-2)}
+
+    /* ══════════════════════════════════════════
+       PAGE SHELL
+    ══════════════════════════════════════════ */
+    .page-shell{flex:1;display:flex;flex-direction:column}
+    .page-header{background:var(--ui-surface);border-bottom:1px solid var(--ui-border);padding:18px 24px}
+    .page-header__inner{max-width:var(--page-max-w);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .page-header__left{display:flex;flex-direction:column;gap:4px}
+    .page-title{font-size:22px;font-weight:700;color:var(--ui-text-1);letter-spacing:-.02em;line-height:1.2}
+    .page-body{flex:1;max-width:var(--page-max-w);width:100%;margin:0 auto;padding:32px 24px}
+
+    /* ══════════════════════════════════════════
+       FORM COMPONENTS
+    ══════════════════════════════════════════ */
+    .ui-field{display:flex;flex-direction:column;gap:6px;width:100%}
+    .ui-field__label{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;color:var(--ui-text-2);letter-spacing:.06em;text-transform:uppercase;user-select:none}
+    .ui-field__req{color:var(--ui-error);font-size:14px;line-height:1;font-weight:700}
+    .ui-field__ctrl{position:relative;display:flex;align-items:center}
+    .ui-field__input{width:100%;height:44px;padding:0 14px;font-family:var(--ui-font);font-size:14px;color:var(--ui-text-1);background:var(--ui-surface);border:1.5px solid var(--ui-border);border-radius:var(--r-md);outline:none;appearance:none;transition:border-color var(--t-base),box-shadow var(--t-base),background var(--t-base)}
+    .ui-field__input::placeholder{color:var(--ui-text-4)}
+    .ui-field__input:hover:not(:focus):not(:disabled):not([readonly]){border-color:var(--ui-border-mid)}
+    .ui-field__input:focus{border-color:var(--ui-border-focus);box-shadow:var(--sh-focus);background:var(--ui-white)}
+    .ui-field__input:disabled,.ui-field__input[readonly]{background:var(--ui-surface-alt);color:var(--ui-text-3);cursor:not-allowed;opacity:.7}
+    .ui-field__hint{font-size:12px;color:var(--ui-text-3);line-height:1.5}
+    .ui-field__err{font-size:12px;font-weight:500;color:var(--ui-error);display:none;line-height:1.4}
+    .ui-field--error .ui-field__input,.ui-field--error select.ui-field__input{border-color:var(--ui-error);background:var(--ui-error-bg)}
+    .ui-field--error .ui-field__input:focus{box-shadow:0 0 0 3px var(--ui-error-glow)}
+    .ui-field--error .ui-field__err{display:block}
+    .ui-field--error .ui-field__hint{display:none}
+
+    /* Select dropdown */
+    select.ui-field__input{padding-right:34px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a897d4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;cursor:pointer}
+    select.ui-field__input:focus{border-color:var(--ui-border-focus);box-shadow:var(--sh-focus)}
+
+    /* Toggle */
+    .ui-toggle{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+    .ui-toggle__input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+    .ui-toggle__track{position:relative;width:44px;height:24px;background:var(--ui-border-mid);border-radius:var(--r-full);transition:background var(--t-base);flex-shrink:0}
+    .ui-toggle__thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.18);transition:transform var(--t-bounce)}
+    .ui-toggle__input:checked~.ui-toggle__track{background:var(--ui-primary)}
+    .ui-toggle__input:checked~.ui-toggle__track .ui-toggle__thumb{transform:translateX(20px)}
+    .ui-toggle__input:focus-visible~.ui-toggle__track{box-shadow:var(--sh-focus)}
+    .ui-toggle__label{font-size:14px;font-weight:500;color:var(--ui-text-2)}
+    .ui-toggle-field{display:flex;align-items:center;height:44px;padding:0 14px;background:var(--ui-surface);border:1.5px solid var(--ui-border);border-radius:var(--r-md)}
+
+    /* Checkbox group */
+    .ui-checkbox-group{display:flex;flex-wrap:wrap;gap:8px;padding:12px 14px;background:var(--ui-surface);border:1.5px solid var(--ui-border);border-radius:var(--r-md);min-height:44px;align-items:center}
+    .ui-checkbox-group.ui-field--error-inner{border-color:var(--ui-error);background:var(--ui-error-bg)}
+    .ui-checkbox-item{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none;padding:3px 8px 3px 6px;border-radius:var(--r-full);border:1.5px solid var(--ui-border);background:var(--ui-surface-alt);transition:border-color var(--t-fast),background var(--t-fast)}
+    .ui-checkbox-item:hover{border-color:var(--ui-border-mid);background:var(--ui-surface)}
+    .ui-checkbox-item input[type="checkbox"]{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+    .ui-checkbox-item__box{width:16px;height:16px;border:1.5px solid var(--ui-border-mid);border-radius:4px;background:var(--ui-white);flex-shrink:0;position:relative;transition:border-color var(--t-fast),background var(--t-fast)}
+    .ui-checkbox-item input:checked~.ui-checkbox-item__box{background:var(--ui-primary);border-color:var(--ui-primary)}
+    .ui-checkbox-item input:checked~.ui-checkbox-item__box::after{content:'';position:absolute;left:4px;top:1px;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg)}
+    .ui-checkbox-item input:checked~.ui-checkbox-item__label{color:var(--ui-primary-dark);font-weight:600}
+    .ui-checkbox-item input:focus-visible~.ui-checkbox-item__box{box-shadow:var(--sh-focus)}
+    .ui-checkbox-item__label{font-size:13px;font-weight:500;color:var(--ui-text-2)}
+    .ui-checkbox-item--checked{border-color:var(--ui-primary);background:var(--ui-primary-light)}
+
+    /* Button */
+    .ui-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 22px;font-family:var(--ui-font);font-size:14px;font-weight:600;white-space:nowrap;border:1.5px solid transparent;border-radius:var(--r-md);cursor:pointer;outline:none;user-select:none;text-decoration:none;transition:background var(--t-base),color var(--t-base),border-color var(--t-base),box-shadow var(--t-base),transform var(--t-fast);overflow:hidden}
+    .ui-btn:active:not(:disabled){transform:scale(.975)}
+    .ui-btn:focus-visible{box-shadow:var(--sh-focus)}
+    .ui-btn:disabled{opacity:.45;cursor:not-allowed;pointer-events:none}
+    .ui-btn__lbl{display:flex;align-items:center;gap:6px;transition:opacity var(--t-fast)}
+    .ui-btn__spin{position:absolute;width:18px;height:18px;border:2.5px solid currentColor;border-top-color:transparent;border-radius:50%;animation:btnSpin .7s linear infinite;opacity:0;pointer-events:none;transition:opacity var(--t-fast)}
+    @keyframes btnSpin{to{transform:rotate(360deg)}}
+    .ui-btn--loading .ui-btn__lbl{opacity:0}
+    .ui-btn--loading .ui-btn__spin{opacity:1}
+    .ui-btn--loading{pointer-events:none}
+    .ui-btn--primary{background:var(--ui-primary);color:#fff;border-color:var(--ui-primary);box-shadow:0 1px 3px rgba(109,40,217,.28)}
+    .ui-btn--primary:hover:not(:disabled){background:var(--ui-primary-dark);border-color:var(--ui-primary-dark)}
+    .ui-btn--secondary{background:var(--ui-white);color:var(--ui-primary);border-color:var(--ui-primary)}
+    .ui-btn--secondary:hover:not(:disabled){background:var(--ui-primary-light)}
+    .ui-btn--ghost{background:transparent;color:var(--ui-text-2);border-color:var(--ui-border)}
+    .ui-btn--ghost:hover:not(:disabled){background:var(--ui-surface-alt);border-color:var(--ui-border-mid)}
+    .ui-btn--danger{background:var(--ui-error);color:#fff;border-color:var(--ui-error)}
+    .ui-btn--danger:hover:not(:disabled){background:#a8211a}
+    .ui-btn--sm{height:36px;padding:0 16px;font-size:13px}
+
+    /* Alert */
+    .ui-alert{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-radius:var(--r-md);border:1px solid transparent;font-size:13.5px;line-height:1.45;animation:alertIn 200ms ease;position:relative}
+    @keyframes alertIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+    .ui-alert__icon{flex-shrink:0;display:flex;align-items:center;margin-top:1px}
+    .ui-alert__body{flex:1;display:flex;flex-direction:column;gap:2px}
+    .ui-alert__msg{font-weight:400;opacity:.9}
+    .ui-alert__x{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:22px;height:22px;background:none;border:none;cursor:pointer;border-radius:4px;color:inherit;opacity:.6;transition:opacity var(--t-fast);padding:0}
+    .ui-alert__x:hover{opacity:1}
+    .ui-alert--dismissible{padding-right:38px}
+    .ui-alert--dismissible .ui-alert__x{position:absolute;right:8px;top:9px}
+    .ui-alert--success{background:var(--ui-success-bg);border-color:var(--ui-success-border);color:var(--ui-success)}
+    .ui-alert--error{background:var(--ui-error-bg);border-color:var(--ui-error-border);color:var(--ui-error)}
+    .ui-alert[hidden]{display:none}
+    .ui-alert.dismissing{animation:alertOut 180ms ease forwards}
+    @keyframes alertOut{to{opacity:0;transform:translateY(-3px);max-height:0;padding:0;margin:0;overflow:hidden}}
+
+    /* Data table */
+    .ui-table-wrap{background:var(--ui-surface);border:1px solid var(--ui-border);border-radius:var(--r-lg);overflow:hidden}
+    .ui-table-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid var(--ui-border);flex-wrap:wrap}
+    .ui-table-toolbar__left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .ui-table-toolbar__right{display:flex;align-items:center;gap:10px}
+    .ui-table-search{position:relative;display:flex;align-items:center}
+    .ui-table-search__icon{position:absolute;left:10px;color:var(--ui-text-3);pointer-events:none;display:flex}
+    .ui-table-search__input{height:36px;padding:0 12px 0 34px;font-family:var(--ui-font);font-size:13.5px;color:var(--ui-text-1);background:var(--ui-surface);border:1.5px solid var(--ui-border);border-radius:var(--r-md);outline:none;width:220px;transition:border-color var(--t-base),box-shadow var(--t-base),width var(--t-base)}
+    .ui-table-search__input::placeholder{color:var(--ui-text-4)}
+    .ui-table-search__input:focus{border-color:var(--ui-border-focus);box-shadow:var(--sh-focus);width:260px}
+    .ui-table-count{font-size:12.5px;color:var(--ui-text-3);white-space:nowrap}
+    .ui-table-scroll{overflow-x:auto}
+    .ui-table{width:100%;border-collapse:collapse;font-size:13.5px}
+    .ui-table thead tr{border-bottom:1.5px solid var(--ui-border);background:var(--ui-surface-alt)}
+    .ui-table th{padding:10px 16px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-text-3);white-space:nowrap;user-select:none}
+    .ui-table th.sortable{cursor:pointer}
+    .ui-table th.sortable:hover{color:var(--ui-text-1)}
+    .ui-table th .sort-icon{display:inline-flex;vertical-align:middle;margin-left:4px;color:var(--ui-text-4);transition:color var(--t-fast),transform var(--t-fast)}
+    .ui-table th.sort-asc .sort-icon{color:var(--ui-primary)}
+    .ui-table th.sort-desc .sort-icon{color:var(--ui-primary);transform:rotate(180deg)}
+    .ui-table td{padding:12px 16px;color:var(--ui-text-2);border-bottom:1px solid var(--ui-border);vertical-align:middle}
+    .ui-table tbody tr:last-child td{border-bottom:none}
+    .ui-table tbody tr{transition:background var(--t-fast)}
+    .ui-table tbody tr:hover{background:var(--ui-surface-alt)}
+    .ui-table-empty{text-align:center;padding:48px 24px}
+    .ui-table-empty__icon{width:44px;height:44px;background:var(--ui-primary-light);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;color:var(--ui-primary);margin:0 auto 12px}
+    .ui-table-empty__title{font-size:14px;font-weight:600;color:var(--ui-text-1);margin-bottom:4px}
+    .ui-table-empty__desc{font-size:13px;color:var(--ui-text-3)}
+    .ui-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:var(--r-full);font-size:12px;font-weight:600;white-space:nowrap}
+    .ui-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.7;flex-shrink:0}
+    .ui-badge--active{background:var(--ui-success-bg);color:var(--ui-success)}
+    .ui-badge--inactive{background:#fef2f1;color:#c0281d}
+    .ui-badge--inactive::before{background:#c0281d}
+    .ui-table-actions{display:flex;align-items:center;gap:6px}
+    .ui-icon-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--ui-border);border-radius:var(--r-md);background:none;cursor:pointer;color:var(--ui-text-3);transition:color var(--t-fast),border-color var(--t-fast),background var(--t-fast);outline:none;flex-shrink:0}
+    .ui-icon-btn:hover{background:var(--ui-surface-alt);border-color:var(--ui-border-mid);color:var(--ui-text-1)}
+    .ui-icon-btn:focus-visible{box-shadow:var(--sh-focus)}
+    .ui-icon-btn--edit:hover{color:var(--ui-primary);border-color:var(--ui-primary);background:var(--ui-primary-light)}
+    .ui-icon-btn--delete:hover{color:#c0281d;border-color:#f0b4b0;background:#fef2f1}
+    .ui-table-pagination{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--ui-border);gap:12px;flex-wrap:wrap}
+    .ui-table-pagination__info{font-size:12.5px;color:var(--ui-text-3);white-space:nowrap}
+    .ui-table-pagination__pages{display:flex;align-items:center;gap:4px}
+    .ui-page-btn{min-width:32px;height:32px;padding:0 6px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--ui-border);border-radius:var(--r-md);background:none;cursor:pointer;font-family:var(--ui-font);font-size:13px;font-weight:500;color:var(--ui-text-2);transition:color var(--t-fast),border-color var(--t-fast),background var(--t-fast);outline:none}
+    .ui-page-btn:hover:not(:disabled){background:var(--ui-surface-alt);border-color:var(--ui-border-mid)}
+    .ui-page-btn.active{background:var(--ui-primary);border-color:var(--ui-primary);color:#fff}
+    .ui-page-btn:disabled{opacity:.4;cursor:not-allowed}
+    .ui-page-btn:focus-visible{box-shadow:var(--sh-focus)}
+    .ui-page-sep{font-size:13px;color:var(--ui-text-4);padding:0 2px}
+    .ui-table-perpage{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ui-text-3)}
+    .ui-table-perpage select{height:30px;padding:0 24px 0 8px;font-family:var(--ui-font);font-size:12.5px;color:var(--ui-text-1);background:var(--ui-surface);border:1.5px solid var(--ui-border);border-radius:var(--r-md);outline:none;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a897d4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;transition:border-color var(--t-base)}
+    .ui-table-perpage select:focus{border-color:var(--ui-border-focus)}
+
+    /* Modal */
+    .ui-modal-overlay{position:fixed;inset:0;background:rgba(15,10,30,.45);z-index:300;display:flex;align-items:center;justify-content:center;padding:16px;animation:overlayIn 150ms ease}
+    @keyframes overlayIn{from{opacity:0}to{opacity:1}}
+    .ui-modal-overlay[hidden]{display:none}
+    .ui-modal{background:var(--ui-surface);border-radius:var(--r-xl);box-shadow:var(--sh-xl);padding:28px;width:100%;animation:modalIn 180ms cubic-bezier(.34,1.2,.64,1);max-height:90vh;overflow-y:auto}
+    @keyframes modalIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+    .ui-modal--sm{max-width:400px}
+    .ui-modal--lg{max-width:620px}
+    .ui-modal__header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .ui-modal__header-left{display:flex;align-items:center;gap:12px}
+    .ui-modal__icon{width:48px;height:48px;border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center}
+    .ui-modal__icon--edit{background:var(--ui-primary-light);color:var(--ui-primary)}
+    .ui-modal__icon--danger{background:#fef2f1;color:#c0281d}
+    .ui-modal__title{font-size:17px;font-weight:700;color:var(--ui-text-1);letter-spacing:-.015em;margin-bottom:0}
+    .ui-modal__sub{font-size:12.5px;color:var(--ui-text-3);margin-top:2px}
+    .ui-modal__desc{font-size:14px;color:var(--ui-text-3);line-height:1.6;margin-bottom:20px}
+    .ui-modal__close{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--ui-border);border-radius:var(--r-md);background:none;cursor:pointer;color:var(--ui-text-3);transition:background var(--t-fast),border-color var(--t-fast),color var(--t-fast);outline:none;flex-shrink:0}
+    .ui-modal__close:hover{background:var(--ui-surface-alt);border-color:var(--ui-border-mid);color:var(--ui-text-1)}
+    .ui-modal__close:focus-visible{box-shadow:var(--sh-focus)}
+    .ui-modal__divider{height:1px;background:var(--ui-border);margin:4px 0}
+    .ui-modal__body{display:flex;flex-direction:column;gap:18px;margin-top:20px}
+    .ui-modal__actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+
+    /* ══════════════════════════════════════════
+       SECTIONS PAGE – SPECIFIC
+    ══════════════════════════════════════════ */
+    .sc-alerts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+    .sc-alerts:empty{margin-bottom:0}
+    .sc-modal-alerts{margin-bottom:8px}
+
+    /* Responsive layout: form on top, table below */
+    .sc-layout{display:flex;flex-direction:column;gap:24px;align-items:stretch}
+
+    /* Form card */
+    .sc-form-card{background:var(--ui-surface);border:1px solid var(--ui-border);border-radius:var(--r-lg);overflow:hidden;max-width:600px}
+    .sc-form-card__header{padding:18px 20px 14px;border-bottom:1px solid var(--ui-border);background:var(--ui-surface-alt)}
+    .sc-form-card__title{font-size:15px;font-weight:700;color:var(--ui-text-1);letter-spacing:-.015em}
+    .sc-form-card__sub{font-size:12.5px;color:var(--ui-text-3);margin-top:3px}
+    .sc-form-card__body{padding:20px;display:flex;flex-direction:column;gap:18px}
+    .sc-form-card__section{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ui-text-3);padding:12px 0 0;border-top:1px solid var(--ui-border);margin-top:4px}
+    .sc-form-card__section:first-child{border-top:none;padding-top:0;margin-top:0}
+    .sc-form-card__footer{padding:16px 20px;border-top:1px solid var(--ui-border);display:flex;gap:10px;justify-content:flex-end;background:var(--ui-surface-alt)}
+
+    /* Two-col grid inside form for measurement units */
+    .sc-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+    /* Table cell: tags for event types */
+    .sc-tags{display:flex;flex-wrap:wrap;gap:4px}
+    .sc-tag{display:inline-flex;align-items:center;padding:2px 8px;background:var(--ui-primary-light);color:var(--ui-primary-dark);border:1px solid rgba(109,40,217,.2);border-radius:var(--r-full);font-size:11.5px;font-weight:600}
+
+    /* Code pill */
+    .ui-code{font-family:monospace;font-size:12.5px;background:var(--ui-primary-light);color:var(--ui-primary-dark);padding:2px 7px;border-radius:var(--r-sm);font-weight:600}
+
+    /* ── Responsive ── */
+    @media(min-width:1200px){.sc-form-card{max-width:none}}
+    @media(max-width:900px){.ui-footer__main{grid-template-columns:1fr 1fr}.ui-footer__brand{grid-column:1/-1}.sc-grid-2{grid-template-columns:1fr}}
+    @media(max-width:768px){.ui-nav__links,.ui-nav__actions{display:none}.ui-nav__hamburger{display:flex}.page-body{padding:20px 16px}.page-header{padding:14px 16px}.sc-form-card{max-width:none}}
+    @media(max-width:640px){.ui-table-toolbar{flex-direction:column;align-items:stretch}.ui-table-search,.ui-table-search__input{width:100%}.ui-table-search__input:focus{width:100%}.ui-table-pagination{flex-direction:column;align-items:flex-start;gap:10px}.sc-grid-2{grid-template-columns:1fr}}
+    @media(max-width:520px){.ui-footer__inner{padding:32px 16px 20px}.ui-footer__main{grid-template-columns:1fr;gap:24px}.ui-footer__brand{grid-column:auto}.ui-footer__bottom{flex-direction:column;align-items:flex-start;gap:10px}.ui-nav__inner{padding:0 16px}.page-title{font-size:18px}.ui-modal__actions{flex-direction:column-reverse}.ui-modal__actions .ui-btn{width:100%}}
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════════ -->
+<nav class="ui-nav" data-nav aria-label="Main navigation">
+  <div class="ui-nav__inner">
+    <a class="ui-nav__logo" href="#" aria-label="Common Events home">
+      <span class="ui-nav__logo-mark" aria-hidden="true">CE</span>
+      <span class="ui-nav__logo-name">Common Events</span>
+    </a>
+    <ul class="ui-nav__links" role="list">
+      <li class="ui-nav__item"><a class="ui-nav__link" href="#">Dashboard</a></li>
+      <li class="ui-nav__item">
+        <button class="ui-nav__link" data-nav-toggle aria-haspopup="true" aria-expanded="false" aria-controls="nav-drop-config">
+          Configuration
+          <svg class="ui-nav__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="ui-nav__dropdown" id="nav-drop-config" data-nav-dropdown role="menu">
+          <span class="ui-nav__drop-group">Master Data</span>
+          <a class="ui-nav__drop-item" href="../event-types/index.html" role="menuitem">
+            <svg class="ui-nav__drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            <span class="ui-nav__drop-meta"><span class="ui-nav__drop-label">Event Types</span><span class="ui-nav__drop-desc">Manage event categories</span></span>
+          </a>
+          <a class="ui-nav__drop-item active" href="#" role="menuitem">
+            <svg class="ui-nav__drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="ui-nav__drop-meta"><span class="ui-nav__drop-label">Sections</span><span class="ui-nav__drop-desc">Manage section setup</span></span>
+          </a>
+        </div>
+      </li>
+      <li class="ui-nav__item"><a class="ui-nav__link" href="#">Events</a></li>
+      <li class="ui-nav__item"><a class="ui-nav__link" href="#">Reports</a></li>
+    </ul>
+    <div class="ui-nav__actions">
+      <div class="ui-nav__item">
+        <button class="ui-nav__profile-btn" data-nav-toggle aria-haspopup="true" aria-expanded="false" aria-controls="nav-profile-drop" aria-label="User menu">
+          <span class="ui-nav__avatar" data-nav-initials aria-hidden="true">JD</span>
+          <span class="ui-nav__profile-name" data-nav-username>Jane Doe</span>
+          <svg class="ui-nav__profile-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="ui-nav__dropdown ui-nav__profile-drop" id="nav-profile-drop" data-nav-dropdown role="menu">
+          <div class="ui-nav__profile-card">
+            <div class="ui-nav__profile-card-name" data-nav-username>Jane Doe</div>
+            <div class="ui-nav__profile-card-email" data-nav-email>jane@commonevents.org</div>
+            <span class="ui-nav__profile-card-role" data-nav-role>Event Coordinator</span>
+          </div>
+          <a class="ui-nav__drop-item" href="#" role="menuitem">
+            <svg class="ui-nav__drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            My Profile
+          </a>
+          <div class="ui-nav__drop-div"></div>
+          <button class="ui-nav__drop-item ui-nav__drop-item--danger" data-nav-logout role="menuitem">
+            <svg class="ui-nav__drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+    <button class="ui-nav__hamburger" data-nav-hamburger aria-label="Open navigation" aria-expanded="false" aria-controls="nav-mobile-panel">
+      <span class="ui-nav__ham-lines" aria-hidden="true">
+        <span class="ui-nav__ham-line"></span>
+        <span class="ui-nav__ham-line"></span>
+        <span class="ui-nav__ham-line"></span>
+      </span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile drawer -->
+<div class="ui-nav__mobile-panel" id="nav-mobile-panel" data-nav-mobile role="dialog" aria-label="Navigation" aria-modal="false">
+  <div class="ui-nav__mob-profile">
+    <div class="ui-nav__avatar" data-nav-initials aria-hidden="true" style="width:40px;height:40px;font-size:13px">JD</div>
+    <div class="ui-nav__mob-profile-info">
+      <div class="ui-nav__mob-profile-name" data-nav-username>Jane Doe</div>
+      <div class="ui-nav__mob-profile-email" data-nav-email>jane@commonevents.org</div>
+    </div>
+  </div>
+  <div class="ui-nav__mob-divider"></div>
+  <a class="ui-nav__mob-link" href="#">Dashboard</a>
+  <div class="ui-nav__mob-item">
+    <button class="ui-nav__mob-link active" data-mob-toggle aria-expanded="false">
+      Configuration
+      <svg class="ui-nav__mob-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="ui-nav__mob-sub">
+      <a class="ui-nav__mob-sub-link" href="../event-types/index.html">Event Types</a>
+      <a class="ui-nav__mob-sub-link active" href="#">Sections</a>
+    </div>
+  </div>
+  <a class="ui-nav__mob-link" href="#">Events</a>
+  <a class="ui-nav__mob-link" href="#">Reports</a>
+  <div class="ui-nav__mob-divider"></div>
+  <a class="ui-nav__mob-link" href="#">My Profile</a>
+  <button class="ui-nav__mob-link" style="color:var(--ui-error);text-align:left" data-nav-logout>Sign Out</button>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE SHELL
+═══════════════════════════════════════════ -->
+<div class="page-shell">
+  <header class="page-header">
+    <div class="page-header__inner">
+      <div class="page-header__left">
+        <h1 class="page-title">Sections</h1>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-body" id="main-content">
+
+    <!-- Page-level alerts -->
+    <div class="sc-alerts" id="scAlerts" aria-live="polite"></div>
+
+    <div class="sc-layout">
+
+      <!-- ═══ CREATE FORM ═══ -->
+      <div class="sc-form-card">
+        <div class="sc-form-card__header">
+          <div class="sc-form-card__title">Add Section</div>
+          <div class="sc-form-card__sub">Create a new section with its settings</div>
+        </div>
+
+        <div class="sc-form-card__body">
+
+          <!-- ── Section Details ── -->
+          <div class="sc-form-card__section">Section Details</div>
+
+          <!-- Section Code -->
+          <div class="ui-field" data-field id="fldCode">
+            <label class="ui-field__label" for="scCode">
+              Section Code <span class="ui-field__req" aria-hidden="true">*</span>
+            </label>
+            <div class="ui-field__ctrl">
+              <input class="ui-field__input" type="text" id="scCode"
+                     placeholder="e.g. SEC-01"
+                     autocomplete="off" spellcheck="false"
+                     aria-required="true" aria-describedby="scCodeErr"
+                     style="text-transform:uppercase" />
+            </div>
+            <span class="ui-field__hint">Unique code — cannot be changed after creation</span>
+            <span class="ui-field__err" id="scCodeErr" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Section Name -->
+          <div class="ui-field" data-field id="fldName">
+            <label class="ui-field__label" for="scName">
+              Section Name <span class="ui-field__req" aria-hidden="true">*</span>
+            </label>
+            <div class="ui-field__ctrl">
+              <input class="ui-field__input" type="text" id="scName"
+                     placeholder="e.g. North Region"
+                     autocomplete="off"
+                     aria-required="true" aria-describedby="scNameErr" />
+            </div>
+            <span class="ui-field__err" id="scNameErr" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Multiple Events Supported -->
+          <div class="ui-field">
+            <span class="ui-field__label">Multiple Events</span>
+            <div class="ui-toggle-field">
+              <label class="ui-toggle" for="scMultipleEvents" style="gap:12px">
+                <input class="ui-toggle__input" type="checkbox" id="scMultipleEvents" />
+                <span class="ui-toggle__track"><span class="ui-toggle__thumb"></span></span>
+                <span class="ui-toggle__label" id="scMultipleEventsLabel">Multiple Events Supported</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- ── Geography ── -->
+          <div class="sc-form-card__section">Geography</div>
+
+          <!-- Geography -->
+          <div class="ui-field" data-field id="fldGeography">
+            <label class="ui-field__label" for="scGeography">
+              Geography <span class="ui-field__req" aria-hidden="true">*</span>
+            </label>
+            <div class="ui-field__ctrl">
+              <select class="ui-field__input" id="scGeography" aria-required="true" aria-describedby="scGeographyErr">
+                <option value="">— Select geography —</option>
+                <option value="south-asia">South Asia</option>
+                <option value="southeast-asia">Southeast Asia</option>
+                <option value="middle-east">Middle East</option>
+                <option value="europe">Europe</option>
+                <option value="north-america">North America</option>
+                <option value="latin-america">Latin America</option>
+                <option value="africa">Africa</option>
+                <option value="oceania">Oceania</option>
+              </select>
+            </div>
+            <span class="ui-field__err" id="scGeographyErr" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Measurement units — 3 col grid -->
+          <div class="sc-grid-2">
+            <!-- Area Measurement -->
+            <div class="ui-field" id="fldAreaUnit">
+              <label class="ui-field__label" for="scAreaUnit">Area Unit</label>
+              <div class="ui-field__ctrl">
+                <select class="ui-field__input" id="scAreaUnit">
+                  <option value="">— Auto —</option>
+                  <option value="sqm">Square Metres (m²)</option>
+                  <option value="sqft">Square Feet (ft²)</option>
+                  <option value="sqkm">Square Kilometres (km²)</option>
+                  <option value="acres">Acres</option>
+                  <option value="hectares">Hectares</option>
+                </select>
+              </div>
+              <span class="ui-field__hint">Auto-set by geography</span>
+            </div>
+
+            <!-- Distance Measurement -->
+            <div class="ui-field" id="fldDistUnit">
+              <label class="ui-field__label" for="scDistUnit">Distance Unit</label>
+              <div class="ui-field__ctrl">
+                <select class="ui-field__input" id="scDistUnit">
+                  <option value="">— Auto —</option>
+                  <option value="km">Kilometres (km)</option>
+                  <option value="miles">Miles (mi)</option>
+                  <option value="nm">Nautical Miles</option>
+                </select>
+              </div>
+              <span class="ui-field__hint">Auto-set by geography</span>
+            </div>
+
+            <!-- Weight Measurement -->
+            <div class="ui-field" id="fldWeightUnit">
+              <label class="ui-field__label" for="scWeightUnit">Weight Unit</label>
+              <div class="ui-field__ctrl">
+                <select class="ui-field__input" id="scWeightUnit">
+                  <option value="">— Auto —</option>
+                  <option value="kg">Kilograms (kg)</option>
+                  <option value="lbs">Pounds (lbs)</option>
+                  <option value="tonnes">Metric Tonnes</option>
+                </select>
+              </div>
+              <span class="ui-field__hint">Auto-set by geography</span>
+            </div>
+
+            <!-- Time Zone -->
+            <div class="ui-field" data-field id="fldTimezone">
+              <label class="ui-field__label" for="scTimezone">
+                Time Zone <span class="ui-field__req" aria-hidden="true">*</span>
+              </label>
+              <div class="ui-field__ctrl">
+                <select class="ui-field__input" id="scTimezone" aria-required="true" aria-describedby="scTimezoneErr">
+                  <option value="">— Select —</option>
+                  <option value="UTC+5:30">UTC+5:30 — India (IST)</option>
+                  <option value="UTC+5:45">UTC+5:45 — Nepal (NPT)</option>
+                  <option value="UTC+6:00">UTC+6:00 — Bangladesh (BST)</option>
+                  <option value="UTC+7:00">UTC+7:00 — Indochina (ICT)</option>
+                  <option value="UTC+8:00">UTC+8:00 — China / SG (CST)</option>
+                  <option value="UTC+9:00">UTC+9:00 — Japan (JST)</option>
+                  <option value="UTC+3:00">UTC+3:00 — Arabia (AST)</option>
+                  <option value="UTC+4:00">UTC+4:00 — Gulf (GST)</option>
+                  <option value="UTC+1:00">UTC+1:00 — Central Europe (CET)</option>
+                  <option value="UTC+0:00">UTC+0:00 — London (GMT)</option>
+                  <option value="UTC-5:00">UTC-5:00 — Eastern US (EST)</option>
+                  <option value="UTC-6:00">UTC-6:00 — Central US (CST)</option>
+                  <option value="UTC-8:00">UTC-8:00 — Pacific US (PST)</option>
+                  <option value="UTC+10:00">UTC+10:00 — Australia East (AEST)</option>
+                  <option value="UTC-3:00">UTC-3:00 — Brazil (BRT)</option>
+                  <option value="UTC+2:00">UTC+2:00 — East Africa (EAT)</option>
+                </select>
+              </div>
+              <span class="ui-field__err" id="scTimezoneErr" role="alert" aria-live="polite"></span>
+            </div>
+          </div>
+
+          <!-- Country -->
+          <div class="ui-field" data-field id="fldCountry">
+            <label class="ui-field__label" for="scCountry">
+              Country <span class="ui-field__req" aria-hidden="true">*</span>
+            </label>
+            <div class="ui-field__ctrl">
+              <select class="ui-field__input" id="scCountry" aria-required="true" aria-describedby="scCountryErr">
+                <option value="">— Select country —</option>
+              </select>
+            </div>
+            <span class="ui-field__err" id="scCountryErr" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- ── Behaviour ── -->
+          <div class="sc-form-card__section">Behaviour</div>
+
+          <!-- Is Active -->
+          <div class="ui-field">
+            <span class="ui-field__label">Is Active</span>
+            <div class="ui-toggle-field">
+              <label class="ui-toggle" for="scActive" style="gap:12px">
+                <input class="ui-toggle__input" type="checkbox" id="scActive" checked />
+                <span class="ui-toggle__track"><span class="ui-toggle__thumb"></span></span>
+                <span class="ui-toggle__label" id="scActiveLabel">Active — available for selection</span>
+              </label>
+            </div>
+          </div>
+
+        </div><!-- /.sc-form-card__body -->
+
+        <div class="sc-form-card__footer">
+          <button type="button" class="ui-btn ui-btn--ghost ui-btn--sm" id="scResetBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3"/></svg>
+            Reset
+          </button>
+          <button type="button" class="ui-btn ui-btn--primary ui-btn--sm" id="scSubmitBtn">
+            <span class="ui-btn__lbl">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Submit
+            </span>
+            <span class="ui-btn__spin" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div><!-- /.sc-form-card -->
+
+      <!-- ═══ TABLE ═══ -->
+      <div id="scTable"></div>
+
+    </div><!-- /.sc-layout -->
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════ -->
+<footer class="ui-footer" data-footer role="contentinfo">
+  <div class="ui-footer__inner">
+    <div class="ui-footer__main">
+      <div class="ui-footer__brand">
+        <a class="ui-footer__logo" href="#" aria-label="Common Events home">
+          <span class="ui-footer__logo-mark" aria-hidden="true">CE</span>
+          <span class="ui-footer__logo-name">Common Events</span>
+        </a>
+        <p class="ui-footer__brand-desc">Plan, coordinate, and track every community event with ease.</p>
+      </div>
+      <div class="ui-footer__col">
+        <h3 class="ui-footer__col-title">Platform</h3>
+        <ul class="ui-footer__links">
+          <li><a class="ui-footer__link" href="#">Dashboard</a></li>
+          <li><a class="ui-footer__link" href="#">Events</a></li>
+          <li><a class="ui-footer__link" href="#">Sections</a></li>
+        </ul>
+      </div>
+      <div class="ui-footer__col">
+        <h3 class="ui-footer__col-title">Resources</h3>
+        <ul class="ui-footer__links">
+          <li><a class="ui-footer__link" href="#">Documentation</a></li>
+          <li><a class="ui-footer__link" href="#">Support</a></li>
+        </ul>
+      </div>
+      <div class="ui-footer__col">
+        <h3 class="ui-footer__col-title">Organisation</h3>
+        <ul class="ui-footer__links">
+          <li><a class="ui-footer__link" href="#">About Us</a></li>
+          <li><a class="ui-footer__link" href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ui-footer__bottom">
+      <p class="ui-footer__copy">&copy; <span data-footer-year></span> Common Events. All rights reserved.</p>
+      <nav class="ui-footer__bottom-links" aria-label="Legal">
+        <a class="ui-footer__bottom-link" href="#">Cookie Policy</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════
+     EDIT MODAL
+═══════════════════════════════════════════ -->
+<div class="ui-modal-overlay" id="editModal" hidden role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+  <div class="ui-modal ui-modal--lg">
+
+    <div class="ui-modal__header">
+      <div class="ui-modal__header-left">
+        <div class="ui-modal__icon ui-modal__icon--edit" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+        <div>
+          <h2 class="ui-modal__title" id="editModalTitle">Edit Section</h2>
+          <p class="ui-modal__sub" id="editModalSub"></p>
+        </div>
+      </div>
+      <button class="ui-modal__close" id="editModalClose" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="ui-modal__divider"></div>
+    <div class="sc-modal-alerts" id="editModalAlerts"></div>
+
+    <div class="ui-modal__body">
+      <input type="hidden" id="editId" />
+
+      <!-- Code (read-only) -->
+      <div class="ui-field">
+        <label class="ui-field__label" for="editCode">Section Code</label>
+        <div class="ui-field__ctrl">
+          <input class="ui-field__input" type="text" id="editCode"
+                 style="background:var(--ui-surface-alt);cursor:not-allowed;opacity:0.7" readonly />
+        </div>
+        <span class="ui-field__hint">Code cannot be changed after creation</span>
+      </div>
+
+      <!-- Name -->
+      <div class="ui-field" data-field id="editFldName">
+        <label class="ui-field__label" for="editName">
+          Section Name <span class="ui-field__req" aria-hidden="true">*</span>
+        </label>
+        <div class="ui-field__ctrl">
+          <input class="ui-field__input" type="text" id="editName"
+                 placeholder="e.g. North Region" autocomplete="off"
+                 aria-required="true" aria-describedby="editNameErr" />
+        </div>
+        <span class="ui-field__err" id="editNameErr" role="alert" aria-live="polite"></span>
+      </div>
+
+      <!-- Multiple Events Supported -->
+      <div class="ui-field">
+        <span class="ui-field__label">Multiple Events</span>
+        <div class="ui-toggle-field">
+          <label class="ui-toggle" for="editMultipleEvents" style="gap:12px">
+            <input class="ui-toggle__input" type="checkbox" id="editMultipleEvents" />
+            <span class="ui-toggle__track"><span class="ui-toggle__thumb"></span></span>
+            <span class="ui-toggle__label" id="editMultipleEventsLabel">Multiple Events Supported</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Geography -->
+      <div class="ui-field" data-field id="editFldGeography">
+        <label class="ui-field__label" for="editGeography">
+          Geography <span class="ui-field__req" aria-hidden="true">*</span>
+        </label>
+        <div class="ui-field__ctrl">
+          <select class="ui-field__input" id="editGeography" aria-required="true" aria-describedby="editGeographyErr">
+            <option value="">— Select geography —</option>
+            <option value="south-asia">South Asia</option>
+            <option value="southeast-asia">Southeast Asia</option>
+            <option value="middle-east">Middle East</option>
+            <option value="europe">Europe</option>
+            <option value="north-america">North America</option>
+            <option value="latin-america">Latin America</option>
+            <option value="africa">Africa</option>
+            <option value="oceania">Oceania</option>
+          </select>
+        </div>
+        <span class="ui-field__err" id="editGeographyErr" role="alert" aria-live="polite"></span>
+      </div>
+
+      <div class="sc-grid-2">
+        <div class="ui-field">
+          <label class="ui-field__label" for="editAreaUnit">Area Unit</label>
+          <div class="ui-field__ctrl">
+            <select class="ui-field__input" id="editAreaUnit">
+              <option value="">— Auto —</option>
+              <option value="sqm">Square Metres (m²)</option>
+              <option value="sqft">Square Feet (ft²)</option>
+              <option value="sqkm">Square Kilometres (km²)</option>
+              <option value="acres">Acres</option>
+              <option value="hectares">Hectares</option>
+            </select>
+          </div>
+        </div>
+        <div class="ui-field">
+          <label class="ui-field__label" for="editDistUnit">Distance Unit</label>
+          <div class="ui-field__ctrl">
+            <select class="ui-field__input" id="editDistUnit">
+              <option value="">— Auto —</option>
+              <option value="km">Kilometres (km)</option>
+              <option value="miles">Miles (mi)</option>
+              <option value="nm">Nautical Miles</option>
+            </select>
+          </div>
+        </div>
+        <div class="ui-field">
+          <label class="ui-field__label" for="editWeightUnit">Weight Unit</label>
+          <div class="ui-field__ctrl">
+            <select class="ui-field__input" id="editWeightUnit">
+              <option value="">— Auto —</option>
+              <option value="kg">Kilograms (kg)</option>
+              <option value="lbs">Pounds (lbs)</option>
+              <option value="tonnes">Metric Tonnes</option>
+            </select>
+          </div>
+        </div>
+        <div class="ui-field" data-field id="editFldTimezone">
+          <label class="ui-field__label" for="editTimezone">
+            Time Zone <span class="ui-field__req" aria-hidden="true">*</span>
+          </label>
+          <div class="ui-field__ctrl">
+            <select class="ui-field__input" id="editTimezone" aria-required="true" aria-describedby="editTimezoneErr">
+              <option value="">— Select —</option>
+              <option value="UTC+5:30">UTC+5:30 — India (IST)</option>
+              <option value="UTC+5:45">UTC+5:45 — Nepal (NPT)</option>
+              <option value="UTC+6:00">UTC+6:00 — Bangladesh (BST)</option>
+              <option value="UTC+7:00">UTC+7:00 — Indochina (ICT)</option>
+              <option value="UTC+8:00">UTC+8:00 — China / SG (CST)</option>
+              <option value="UTC+9:00">UTC+9:00 — Japan (JST)</option>
+              <option value="UTC+3:00">UTC+3:00 — Arabia (AST)</option>
+              <option value="UTC+4:00">UTC+4:00 — Gulf (GST)</option>
+              <option value="UTC+1:00">UTC+1:00 — Central Europe (CET)</option>
+              <option value="UTC+0:00">UTC+0:00 — London (GMT)</option>
+              <option value="UTC-5:00">UTC-5:00 — Eastern US (EST)</option>
+              <option value="UTC-6:00">UTC-6:00 — Central US (CST)</option>
+              <option value="UTC-8:00">UTC-8:00 — Pacific US (PST)</option>
+              <option value="UTC+10:00">UTC+10:00 — Australia East (AEST)</option>
+              <option value="UTC-3:00">UTC-3:00 — Brazil (BRT)</option>
+              <option value="UTC+2:00">UTC+2:00 — East Africa (EAT)</option>
+            </select>
+          </div>
+          <span class="ui-field__err" id="editTimezoneErr" role="alert" aria-live="polite"></span>
+        </div>
+      </div>
+
+      <div class="ui-field" data-field id="editFldCountry">
+        <label class="ui-field__label" for="editCountry">
+          Country <span class="ui-field__req" aria-hidden="true">*</span>
+        </label>
+        <div class="ui-field__ctrl">
+          <select class="ui-field__input" id="editCountry" aria-required="true" aria-describedby="editCountryErr">
+            <option value="">— Select country —</option>
+          </select>
+        </div>
+        <span class="ui-field__err" id="editCountryErr" role="alert" aria-live="polite"></span>
+      </div>
+
+      <!-- Is Active -->
+      <div class="ui-field">
+        <span class="ui-field__label">Is Active</span>
+        <div class="ui-toggle-field">
+          <label class="ui-toggle" for="editActive" style="gap:12px">
+            <input class="ui-toggle__input" type="checkbox" id="editActive" />
+            <span class="ui-toggle__track"><span class="ui-toggle__thumb"></span></span>
+            <span class="ui-toggle__label" id="editActiveLabel">Active</span>
+          </label>
+        </div>
+      </div>
+
+    </div><!-- /.ui-modal__body -->
+
+    <div class="ui-modal__divider" style="margin-top:8px"></div>
+    <div class="ui-modal__actions">
+      <button type="button" class="ui-btn ui-btn--ghost ui-btn--sm" id="editCancelBtn">Cancel</button>
+      <button type="button" class="ui-btn ui-btn--primary ui-btn--sm" id="editSaveBtn">
+        <span class="ui-btn__lbl">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save Changes
+        </span>
+        <span class="ui-btn__spin" aria-hidden="true"></span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     DELETE MODAL
+═══════════════════════════════════════════ -->
+<div class="ui-modal-overlay" id="deleteModal" hidden role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+  <div class="ui-modal ui-modal--sm">
+    <div class="ui-modal__icon ui-modal__icon--danger" aria-hidden="true" style="margin-bottom:16px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+    </div>
+    <h2 class="ui-modal__title" id="deleteModalTitle">Delete Section?</h2>
+    <p  class="ui-modal__desc" id="deleteModalDesc">This action cannot be undone.</p>
+    <div id="deleteModalErr"></div>
+    <div class="ui-modal__actions">
+      <button type="button" class="ui-btn ui-btn--ghost ui-btn--sm" id="deleteCancelBtn">Cancel</button>
+      <button type="button" class="ui-btn ui-btn--danger ui-btn--sm" id="deleteConfirmBtn">
+        <span class="ui-btn__lbl">Delete</span>
+        <span class="ui-btn__spin" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════ -->
+<script src="../../../../components/navbar/navbar.js"></script>
+<script src="../../../../components/footer/footer.js"></script>
+<script src="../../../../components/data-table/data-table.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ── Nav + footer ── */
+  const nav = document.querySelector('[data-nav]');
+  if (nav && typeof UINavbar !== 'undefined') {
+    UINavbar.setUser(nav, { name: 'Jane Doe', email: 'jane@commonevents.org', role: 'Event Coordinator' });
+    UINavbar.onLogout(nav, () => { location.href = '../../pages/login/login.html'; });
+  }
+  if (typeof UIFooter !== 'undefined') UIFooter.initAll();
+  document.querySelectorAll('[data-footer-year]').forEach(el => el.textContent = new Date().getFullYear());
+
+  /* ══════════════════════════════════════════
+     REFERENCE DATA
+  ══════════════════════════════════════════ */
+  const EVENT_TYPES = [
+    { code: 'CONF',   name: 'Conference'        },
+    { code: 'WRK',    name: 'Workshop'          },
+    { code: 'SEM',    name: 'Seminar'           },
+    { code: 'FUND',   name: 'Fundraiser'        },
+    { code: 'COMM',   name: 'Community Drive'   },
+    { code: 'OUTRCH', name: 'Outreach Program'  },
+    { code: 'VOL',    name: 'Volunteer Activity'},
+    { code: 'GALA',   name: 'Gala / Dinner'     },
+  ];
+
+  /* Geography → defaults mapping */
+  const GEO_DEFAULTS = {
+    'south-asia':     { area: 'sqm',   dist: 'km',    weight: 'kg'  },
+    'southeast-asia': { area: 'sqm',   dist: 'km',    weight: 'kg'  },
+    'middle-east':    { area: 'sqm',   dist: 'km',    weight: 'kg'  },
+    'europe':         { area: 'sqm',   dist: 'km',    weight: 'kg'  },
+    'north-america':  { area: 'sqft',  dist: 'miles', weight: 'lbs' },
+    'latin-america':  { area: 'sqm',   dist: 'km',    weight: 'kg'  },
+    'africa':         { area: 'sqm',   dist: 'km',    weight: 'kg'  },
+    'oceania':        { area: 'sqm',   dist: 'km',    weight: 'kg'  },
+  };
+
+  /* Geography → countries */
+  const GEO_COUNTRIES = {
+    'south-asia':     ['India','Pakistan','Bangladesh','Sri Lanka','Nepal','Bhutan','Maldives','Afghanistan'],
+    'southeast-asia': ['Thailand','Vietnam','Indonesia','Philippines','Malaysia','Singapore','Myanmar','Cambodia','Laos','Brunei','Timor-Leste'],
+    'middle-east':    ['Saudi Arabia','UAE','Qatar','Kuwait','Bahrain','Oman','Jordan','Lebanon','Iraq','Iran','Syria','Yemen','Israel'],
+    'europe':         ['Germany','France','United Kingdom','Italy','Spain','Netherlands','Belgium','Sweden','Norway','Denmark','Poland','Portugal','Switzerland','Austria','Finland'],
+    'north-america':  ['United States','Canada','Mexico'],
+    'latin-america':  ['Brazil','Argentina','Colombia','Chile','Peru','Venezuela','Ecuador','Bolivia','Paraguay','Uruguay','Guyana','Suriname'],
+    'africa':         ['Nigeria','South Africa','Kenya','Ethiopia','Ghana','Tanzania','Uganda','Rwanda','Cameroon','Senegal','Côte d\'Ivoire','Mozambique','Zambia','Zimbabwe'],
+    'oceania':        ['Australia','New Zealand','Fiji','Papua New Guinea','Samoa','Tonga','Vanuatu','Solomon Islands'],
+  };
+
+  /* ══════════════════════════════════════════
+     DOM REFS — Create form
+  ══════════════════════════════════════════ */
+  const alertsEl       = document.getElementById('scAlerts');
+  const fldCode        = document.getElementById('fldCode');
+  const fldName        = document.getElementById('fldName');
+  const fldGeography   = document.getElementById('fldGeography');
+  const fldTimezone    = document.getElementById('fldTimezone');
+  const fldCountry     = document.getElementById('fldCountry');
+  const inCode         = document.getElementById('scCode');
+  const inName         = document.getElementById('scName');
+  const inGeography    = document.getElementById('scGeography');
+  const inAreaUnit     = document.getElementById('scAreaUnit');
+  const inDistUnit     = document.getElementById('scDistUnit');
+  const inWeightUnit   = document.getElementById('scWeightUnit');
+  const inTimezone     = document.getElementById('scTimezone');
+  const inCountry      = document.getElementById('scCountry');
+  const inActive       = document.getElementById('scActive');
+  const activeLabel    = document.getElementById('scActiveLabel');
+  const inMultipleEvents = document.getElementById('scMultipleEvents');
+  const multipleEventsLabel = document.getElementById('scMultipleEventsLabel');
+  const submitBtn      = document.getElementById('scSubmitBtn');
+  const resetBtn       = document.getElementById('scResetBtn');
+
+  /* DOM refs — Edit modal */
+  const editModal      = document.getElementById('editModal');
+  const editModalAlerts= document.getElementById('editModalAlerts');
+  const editModalSub   = document.getElementById('editModalSub');
+  const editModalClose = document.getElementById('editModalClose');
+  const editFldName    = document.getElementById('editFldName');
+  const editFldGeo     = document.getElementById('editFldGeography');
+  const editFldTz      = document.getElementById('editFldTimezone');
+  const editFldCountry = document.getElementById('editFldCountry');
+  const editIdInput    = document.getElementById('editId');
+  const editCode       = document.getElementById('editCode');
+  const editName       = document.getElementById('editName');
+  const editGeo        = document.getElementById('editGeography');
+  const editAreaUnit   = document.getElementById('editAreaUnit');
+  const editDistUnit   = document.getElementById('editDistUnit');
+  const editWeightUnit = document.getElementById('editWeightUnit');
+  const editTimezone   = document.getElementById('editTimezone');
+  const editCountry    = document.getElementById('editCountry');
+  const editActive     = document.getElementById('editActive');
+  const editActiveLbl  = document.getElementById('editActiveLabel');
+  const editMultipleEvents = document.getElementById('editMultipleEvents');
+  const editMultipleEventsLabel = document.getElementById('editMultipleEventsLabel');
+  const editCancelBtn  = document.getElementById('editCancelBtn');
+  const editSaveBtn    = document.getElementById('editSaveBtn');
+
+  /* DOM refs — Delete modal */
+  const deleteModal      = document.getElementById('deleteModal');
+  const deleteModalDesc  = document.getElementById('deleteModalDesc');
+  const deleteModalErr   = document.getElementById('deleteModalErr');
+  const deleteCancelBtn  = document.getElementById('deleteCancelBtn');
+  const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
+
+  /* ══════════════════════════════════════════
+     ICONS
+  ══════════════════════════════════════════ */
+  const ICO = {
+    success: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+    error:   `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  };
+  const CLOSE_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+
+  /* ══════════════════════════════════════════
+     ALERT HELPERS
+  ══════════════════════════════════════════ */
+  function makeAlert(type, msg) {
+    const el = document.createElement('div');
+    el.className = `ui-alert ui-alert--${type} ui-alert--dismissible`;
+    el.setAttribute('role', type === 'error' ? 'alert' : 'status');
+    el.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+    el.innerHTML = `<span class="ui-alert__icon" aria-hidden="true">${ICO[type]||ICO.error}</span><div class="ui-alert__body"><span class="ui-alert__msg">${msg}</span></div><button type="button" class="ui-alert__x" aria-label="Dismiss">${CLOSE_SVG}</button>`;
+    const dismiss = () => {
+      el.classList.add('dismissing');
+      el.addEventListener('animationend', () => el.remove(), { once: true });
+    };
+    el.querySelector('.ui-alert__x').addEventListener('click', dismiss);
+    return { el, dismiss };
+  }
+
+  function showPageAlert(type, msg, autoClose = true) {
+    alertsEl.innerHTML = '';
+    const { el, dismiss } = makeAlert(type, msg);
+    alertsEl.appendChild(el);
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (autoClose) setTimeout(dismiss, 5000);
+  }
+
+  function showInlineAlert(container, type, msg) {
+    container.innerHTML = '';
+    const { el } = makeAlert(type, msg);
+    el.style.marginBottom = '8px';
+    container.appendChild(el);
+  }
+
+  /* ══════════════════════════════════════════
+     FIELD ERROR HELPERS
+  ══════════════════════════════════════════ */
+  function setErr(fieldEl, inputEl, msg) {
+    fieldEl.classList.add('ui-field--error');
+    const e = fieldEl.querySelector('.ui-field__err');
+    if (e) e.textContent = msg;
+    if (inputEl) inputEl.setAttribute('aria-invalid', 'true');
+  }
+  function clearErr(fieldEl, inputEl) {
+    fieldEl.classList.remove('ui-field--error');
+    const e = fieldEl.querySelector('.ui-field__err');
+    if (e) e.textContent = '';
+    if (inputEl) inputEl.removeAttribute('aria-invalid');
+  }
+
+  /* ══════════════════════════════════════════
+     CHECKBOX GROUP BUILDER
+  ══════════════════════════════════════════ */
+  function buildCheckboxGroup(container, selected = []) {
+    container.innerHTML = '';
+    EVENT_TYPES.forEach(et => {
+      const id      = `chk-${container.id}-${et.code}`;
+      const checked = selected.includes(et.code);
+      const item    = document.createElement('label');
+      item.className = `ui-checkbox-item${checked ? ' ui-checkbox-item--checked' : ''}`;
+      item.htmlFor   = id;
+      item.innerHTML = `
+        <input type="checkbox" id="${id}" value="${et.code}" ${checked ? 'checked' : ''} />
+        <span class="ui-checkbox-item__box" aria-hidden="true"></span>
+        <span class="ui-checkbox-item__label">${et.name}</span>`;
+      const chk = item.querySelector('input');
+      chk.addEventListener('change', () => {
+        item.classList.toggle('ui-checkbox-item--checked', chk.checked);
+      });
+      container.appendChild(item);
+    });
+  }
+
+  function getCheckedValues(container) {
+    return [...container.querySelectorAll('input[type="checkbox"]:checked')].map(c => c.value);
+  }
+
+  /* ══════════════════════════════════════════
+     COUNTRY DROPDOWN POPULATION
+  ══════════════════════════════════════════ */
+  function populateCountries(selectEl, geoValue, selectedCountry = '') {
+    const countries = GEO_COUNTRIES[geoValue] || [];
+    selectEl.innerHTML = '<option value="">— Select country —</option>';
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      if (c === selectedCountry) opt.selected = true;
+      selectEl.appendChild(opt);
+    });
+  }
+
+  /* ══════════════════════════════════════════
+     AUTO-SET MEASUREMENT UNITS ON GEO CHANGE
+  ══════════════════════════════════════════ */
+  function applyGeoDefaults(geoValue, areaEl, distEl, weightEl, countryEl) {
+    const defaults = GEO_DEFAULTS[geoValue];
+    if (defaults) {
+      areaEl.value   = defaults.area;
+      distEl.value   = defaults.dist;
+      weightEl.value = defaults.weight;
+    } else {
+      areaEl.value = distEl.value = weightEl.value = '';
+    }
+    populateCountries(countryEl, geoValue);
+  }
+
+  /* Wire geo change for create form */
+  inGeography.addEventListener('change', () => {
+    clearErr(fldGeography, inGeography);
+    applyGeoDefaults(inGeography.value, inAreaUnit, inDistUnit, inWeightUnit, inCountry);
+  });
+  inCountry.addEventListener('change',  () => clearErr(fldCountry, inCountry));
+  inTimezone.addEventListener('change', () => clearErr(fldTimezone, inTimezone));
+
+  /* Wire geo change for edit modal */
+  editGeo.addEventListener('change', () => {
+    clearErr(editFldGeo, editGeo);
+    applyGeoDefaults(editGeo.value, editAreaUnit, editDistUnit, editWeightUnit, editCountry);
+  });
+
+  /* ══════════════════════════════════════════
+     TOGGLE LABEL SYNC
+  ══════════════════════════════════════════ */
+  inActive.addEventListener('change', () => {
+    activeLabel.textContent = inActive.checked
+      ? 'Active — available for selection'
+      : 'Inactive — not available for selection';
+  });
+  inMultipleEvents.addEventListener('change', () => {
+    multipleEventsLabel.textContent = inMultipleEvents.checked
+      ? 'Multiple Events Supported'
+      : 'Single Event Only';
+  });
+  editActive.addEventListener('change', () => {
+    editActiveLbl.textContent = editActive.checked ? 'Active' : 'Inactive';
+  });
+  editMultipleEvents.addEventListener('change', () => {
+    editMultipleEventsLabel.textContent = editMultipleEvents.checked
+      ? 'Multiple Events Supported'
+      : 'Single Event Only';
+  });
+
+  /* Auto-uppercase + filter code */
+  inCode.addEventListener('input', e => {
+    const pos = e.target.selectionStart;
+    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9\-]/g, '');
+    e.target.setSelectionRange(pos, pos);
+    clearErr(fldCode, inCode);
+  });
+  inName.addEventListener('input', () => clearErr(fldName, inName));
+
+  /* ══════════════════════════════════════════
+     SEED DATA
+  ══════════════════════════════════════════ */
+  const seedData = [
+    { id:1, code:'SEC-01', name:'North Region',   multipleEvents:true,  geography:'south-asia',    areaUnit:'sqm',  distUnit:'km',    weightUnit:'kg',  timezone:'UTC+5:30', country:'India',    active:true  },
+    { id:2, code:'SEC-02', name:'South Region',   multipleEvents:false, geography:'south-asia',    areaUnit:'sqm',  distUnit:'km',    weightUnit:'kg',  timezone:'UTC+5:30', country:'India',    active:true  },
+    { id:3, code:'SEC-03', name:'West Coast',     multipleEvents:true,  geography:'north-america', areaUnit:'sqft', distUnit:'miles', weightUnit:'lbs', timezone:'UTC-8:00', country:'United States', active:true  },
+    { id:4, code:'SEC-04', name:'APAC Hub',       multipleEvents:false, geography:'southeast-asia',areaUnit:'sqm',  distUnit:'km',    weightUnit:'kg',  timezone:'UTC+8:00', country:'Singapore',active:false },
+    { id:5, code:'SEC-05', name:'European Office',multipleEvents:true,  geography:'europe',        areaUnit:'sqm',  distUnit:'km',    weightUnit:'kg',  timezone:'UTC+1:00', country:'Germany',  active:true  },
+  ];
+  let nextId = seedData.length + 1;
+
+  /* ══════════════════════════════════════════
+     INIT TABLE
+  ══════════════════════════════════════════ */
+  const table = UIDataTable.create(document.getElementById('scTable'), {
+    columns: [
+      { key:'code',       label:'Code',       sortable:true,
+        render: v => `<span class="ui-code">${v}</span>` },
+      { key:'name',       label:'Name',       sortable:true },
+      { key:'geography',  label:'Geography',  sortable:true,
+        render: v => v.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase()) },
+      { key:'country',    label:'Country',    sortable:true },
+      { key:'multipleEvents', label:'Multiple Events', sortable:true,
+        render: v => v
+          ? `<span class="ui-badge ui-badge--active">Yes</span>`
+          : `<span class="ui-badge ui-badge--inactive">No</span>` },
+      { key:'active', label:'Status', sortable:true,
+        render: v => v
+          ? `<span class="ui-badge ui-badge--active">Active</span>`
+          : `<span class="ui-badge ui-badge--inactive">Inactive</span>` },
+    ],
+    data: seedData,
+    perPage: 5,
+    searchKeys: ['code','name','country','geography'],
+    onEdit:   openEditModal,
+    onDelete: openDeleteModal,
+    emptyTitle: 'No sections yet',
+    emptyDesc:  'Add your first section using the form on the left.',
+  });
+
+  /* ══════════════════════════════════════════
+     SIMULATED API CALLS
+  ══════════════════════════════════════════ */
+  let _dc = 0;
+  const apiCreate = data => new Promise(r => setTimeout(() => r({ id: nextId++, ...data }), 700));
+  const apiUpdate = (id, data) => new Promise((res, rej) => setTimeout(() => {
+    _dc++;
+    _dc % 4 === 0
+      ? rej(new Error('Server error: failed to save. Please try again.'))
+      : res({ id, ...data });
+  }, 800));
+  const apiDelete = id => new Promise((res, rej) => setTimeout(() => {
+    _dc++;
+    _dc % 5 === 0
+      ? rej(new Error('Server error: could not delete. Please try again.'))
+      : res({ deleted: true });
+  }, 600));
+
+  /* ══════════════════════════════════════════
+     CREATE FORM — INIT + VALIDATE + SUBMIT
+  ══════════════════════════════════════════ */
+
+  function validateCreate() {
+    let ok = true;
+    const code = inCode.value.trim();
+    const name = inName.value.trim();
+    const geo  = inGeography.value;
+    const tz   = inTimezone.value;
+    const ctry = inCountry.value;
+
+    if (!code) {
+      setErr(fldCode, inCode, 'Section Code is required.'); ok = false;
+    } else if (!/^[A-Z0-9\-]+$/.test(code)) {
+      setErr(fldCode, inCode, 'Only letters, numbers and hyphens allowed.'); ok = false;
+    } else if (table.getData().find(r => r.code === code)) {
+      setErr(fldCode, inCode, `Code "${code}" already exists.`); ok = false;
+    }
+    if (!name) { setErr(fldName, inName, 'Section Name is required.'); ok = false; }
+    if (!geo)  { setErr(fldGeography, inGeography, 'Geography is required.'); ok = false; }
+    if (!tz)   { setErr(fldTimezone, inTimezone, 'Time Zone is required.'); ok = false; }
+    if (!ctry) { setErr(fldCountry, inCountry, 'Country is required.'); ok = false; }
+
+    if (!ok) showPageAlert('error', 'Please fix the highlighted fields before submitting.', false);
+    return ok;
+  }
+
+  function resetCreate() {
+    inCode.value = ''; inName.value = '';
+    inGeography.value = ''; inAreaUnit.value = ''; inDistUnit.value = '';
+    inWeightUnit.value = ''; inTimezone.value = '';
+    populateCountries(inCountry, '');
+    inActive.checked = true;
+    activeLabel.textContent = 'Active — available for selection';
+    inMultipleEvents.checked = false;
+    multipleEventsLabel.textContent = 'Multiple Events Supported';
+    [fldCode, fldName, fldGeography, fldTimezone, fldCountry].forEach(f => {
+      const inp = f.querySelector('input,select');
+      clearErr(f, inp);
+    });
+    alertsEl.innerHTML = '';
+  }
+
+  resetBtn.addEventListener('click', resetCreate);
+
+  submitBtn.addEventListener('click', async () => {
+    alertsEl.innerHTML = '';
+    if (!validateCreate()) return;
+
+    const payload = {
+      code:           inCode.value.trim(),
+      name:           inName.value.trim(),
+      multipleEvents: inMultipleEvents.checked,
+      geography:      inGeography.value,
+      areaUnit:       inAreaUnit.value,
+      distUnit:       inDistUnit.value,
+      weightUnit:     inWeightUnit.value,
+      timezone:       inTimezone.value,
+      country:        inCountry.value,
+      active:         inActive.checked,
+    };
+
+    submitBtn.classList.add('ui-btn--loading');
+    try {
+      const result = await apiCreate(payload);
+      table.addRow(result);
+      showPageAlert('success', `Section "${result.name}" (${result.code}) created successfully.`);
+      resetCreate();
+      inCode.focus();
+    } catch (err) {
+      showPageAlert('error', err.message || 'Failed to create section. Please try again.', false);
+    } finally {
+      submitBtn.classList.remove('ui-btn--loading');
+    }
+  });
+
+  /* ══════════════════════════════════════════
+     EDIT MODAL
+  ══════════════════════════════════════════ */
+  function openEditModal(row) {
+    editIdInput.value    = row.id;
+    editCode.value       = row.code;
+    editName.value       = row.name;
+    editModalSub.textContent = `Code: ${row.code}`;
+
+    // Geo + cascades
+    editGeo.value = row.geography;
+    populateCountries(editCountry, row.geography, row.country);
+    editAreaUnit.value   = row.areaUnit   || '';
+    editDistUnit.value   = row.distUnit   || '';
+    editWeightUnit.value = row.weightUnit || '';
+    editTimezone.value   = row.timezone   || '';
+    editCountry.value    = row.country    || '';
+
+    // Active + Multiple Events
+    editActive.checked       = row.active;
+    editActiveLbl.textContent = row.active ? 'Active' : 'Inactive';
+    editMultipleEvents.checked = row.multipleEvents || false;
+    editMultipleEventsLabel.textContent = (row.multipleEvents ? 'Multiple Events Supported' : 'Single Event Only');
+
+    // Clear errors
+    [editFldName, editFldGeo, editFldTz, editFldCountry].forEach(f => {
+      clearErr(f, f.querySelector('input,select'));
+    });
+    editModalAlerts.innerHTML = '';
+
+    editModal.hidden = false;
+    requestAnimationFrame(() => editName.focus());
+  }
+
+  function closeEditModal() {
+    editModal.hidden = true;
+    editIdInput.value = '';
+  }
+
+  function validateEdit() {
+    let ok = true;
+    if (!editName.value.trim())    { setErr(editFldName,    editName,    'Section Name is required.'); ok = false; }
+    if (!editGeo.value)            { setErr(editFldGeo,     editGeo,     'Geography is required.'); ok = false; }
+    if (!editTimezone.value)       { setErr(editFldTz,      editTimezone,'Time Zone is required.'); ok = false; }
+    if (!editCountry.value)        { setErr(editFldCountry, editCountry, 'Country is required.'); ok = false; }
+    if (!ok) showInlineAlert(editModalAlerts, 'error', 'Please fix the highlighted fields before saving.');
+    return ok;
+  }
+
+  editName.addEventListener('input',    () => clearErr(editFldName, editName));
+  editGeo.addEventListener('change',    () => clearErr(editFldGeo, editGeo));
+  editTimezone.addEventListener('change', () => clearErr(editFldTz, editTimezone));
+  editCountry.addEventListener('change',  () => clearErr(editFldCountry, editCountry));
+
+  editSaveBtn.addEventListener('click', async () => {
+    editModalAlerts.innerHTML = '';
+    if (!validateEdit()) return;
+
+    const id = Number(editIdInput.value);
+    const payload = {
+      name:           editName.value.trim(),
+      multipleEvents: editMultipleEvents.checked,
+      geography:      editGeo.value,
+      areaUnit:       editAreaUnit.value,
+      distUnit:       editDistUnit.value,
+      weightUnit:     editWeightUnit.value,
+      timezone:       editTimezone.value,
+      country:        editCountry.value,
+      active:         editActive.checked,
+    };
+
+    editSaveBtn.classList.add('ui-btn--loading');
+    try {
+      await apiUpdate(id, payload);
+      table.updateRow('id', id, payload);
+      closeEditModal();
+      showPageAlert('success', `Section "${payload.name}" updated successfully.`);
+    } catch (err) {
+      showInlineAlert(editModalAlerts, 'error', err.message || 'Failed to save. Please try again.');
+    } finally {
+      editSaveBtn.classList.remove('ui-btn--loading');
+    }
+  });
+
+  editCancelBtn.addEventListener('click',  closeEditModal);
+  editModalClose.addEventListener('click', closeEditModal);
+  editModal.addEventListener('click', e => { if (e.target === editModal) closeEditModal(); });
+
+  /* ══════════════════════════════════════════
+     DELETE MODAL
+  ══════════════════════════════════════════ */
+  let pendingDelete = null;
+
+  function openDeleteModal(row) {
+    pendingDelete = row;
+    deleteModalDesc.textContent = `Are you sure you want to delete section "${row.name}" (${row.code})? This action cannot be undone.`;
+    deleteModalErr.innerHTML    = '';
+    deleteModal.hidden = false;
+    deleteConfirmBtn.focus();
+  }
+
+  function closeDeleteModal() {
+    deleteModal.hidden = true;
+    pendingDelete = null;
+  }
+
+  deleteCancelBtn.addEventListener('click', closeDeleteModal);
+  deleteModal.addEventListener('click', e => { if (e.target === deleteModal) closeDeleteModal(); });
+
+  deleteConfirmBtn.addEventListener('click', async () => {
+    if (!pendingDelete) return;
+    const row = pendingDelete;
+    deleteModalErr.innerHTML = '';
+    deleteConfirmBtn.classList.add('ui-btn--loading');
+    deleteCancelBtn.disabled = true;
+    try {
+      await apiDelete(row.id);
+      table.deleteRow('id', row.id);
+      closeDeleteModal();
+      showPageAlert('success', `Section "${row.name}" has been deleted.`);
+    } catch (err) {
+      showInlineAlert(deleteModalErr, 'error', err.message || 'Failed to delete. Please try again.');
+    } finally {
+      deleteConfirmBtn.classList.remove('ui-btn--loading');
+      deleteCancelBtn.disabled = false;
+    }
+  });
+
+  /* ══════════════════════════════════════════
+     GLOBAL ESCAPE
+  ══════════════════════════════════════════ */
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (!editModal.hidden)   closeEditModal();
+    if (!deleteModal.hidden) closeDeleteModal();
+  });
+
+})();
+</script>
+
+</body>
+</html>
