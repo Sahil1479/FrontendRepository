@@ -171,7 +171,7 @@
     .sc-layout{display:flex;flex-direction:column;gap:24px;align-items:stretch}
 
     /* Form card */
-    .sc-form-card{background:var(--ui-surface);border:1px solid var(--ui-border);border-radius:var(--r-lg);overflow:hidden;max-width:600px}
+    .sc-form-card{background:var(--ui-surface);border:1px solid var(--ui-border);border-radius:var(--r-lg);overflow:hidden}
     .sc-form-card__header{padding:18px 20px 14px;border-bottom:1px solid var(--ui-border);background:var(--ui-surface-alt)}
     .sc-form-card__title{font-size:15px;font-weight:700;color:var(--ui-text-1);letter-spacing:-.015em}
     .sc-form-card__sub{font-size:12.5px;color:var(--ui-text-3);margin-top:3px}
@@ -300,7 +300,7 @@
           </div>
 
           <!-- ── Geography ── -->
-          <!-- Geography & Timezone in one row -->
+          <!-- Geography, Country & Timezone in one row -->
           <div class="sc-grid-row sc-grid-row--3col">
             <!-- Geography -->
             <div class="ui-field" data-field id="fldGeography">
@@ -365,11 +365,7 @@
               <span class="ui-field__err" id="scTimezoneErr" role="alert" aria-live="polite"></span>
             </div>
 
-          </div>
-
-          <!-- Country & Area Unit in one row -->
-          <div class="sc-grid-row sc-grid-row--3col">
-            <!-- Weight Measurement -->
+                        <!-- Weight Measurement -->
             <div class="ui-field" id="fldWeightUnit">
               <label class="ui-field__label" for="scWeightUnit">Weight Unit</label>
               <div class="ui-field__ctrl">
@@ -409,13 +405,7 @@
                 </select>
               </div>
             </div>
-          </div>
 
-          <!-- Distance Unit & Weight Unit in one row -->
-          <div class="sc-grid-row sc-grid-row--2col">
-            
-
-            
           </div>
 
           <!-- ── Behaviour ── -->
