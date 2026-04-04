@@ -364,16 +364,6 @@
 <script>
 (function () {
   'use strict';
-
-  /* ── Nav + footer ── */
-  const nav = document.querySelector('[data-nav]');
-  if (nav && typeof UINavbar !== 'undefined') {
-    UINavbar.setUser(nav, { name: 'Jane Doe', email: 'jane@commonevents.org', role: 'Event Coordinator' });
-    UINavbar.onLogout(nav, () => { location.href = '../../pages/login/login.html'; });
-  }
-  if (typeof UIFooter !== 'undefined') UIFooter.initAll();
-  document.querySelectorAll('[data-footer-year]').forEach(el => el.textContent = new Date().getFullYear());
-
   /* ── DOM refs ── */
   const alertsEl       = document.getElementById('etAlerts');
   const fieldCode      = document.getElementById('fieldCode');
